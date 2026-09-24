@@ -1,5 +1,6 @@
 ﻿const express = require('express');
 const cors = require('cors');
+const authRoutes = require('./routes/auth.routes');
 const { errorHandler, notFoundHandler } = require('./middleware/error.middleware');
 
 const app = express();
@@ -14,6 +15,8 @@ app.get('/', (req, res) => {
     message: 'AI-Powered Health Risk Prediction and Monitoring System Backend API is active',
   });
 });
+
+app.use('/api/auth', authRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
