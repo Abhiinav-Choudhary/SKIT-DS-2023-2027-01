@@ -1,0 +1,404 @@
+{
+  "target_definition": "Existing multiclass `num` target with classes 0, 1, 2, 3, 4.",
+  "test_set_status": "Untouched: test split was not loaded or evaluated.",
+  "methodology": {
+    "feature_pipeline": "Existing Heart Disease feature-engineering/preprocessing pipeline inside each sklearn Pipeline.",
+    "cross_validation": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42) on training split.",
+    "validation": "Each baseline fitted on full training split, evaluated once on validation split.",
+    "selection_rule": "Highest validation weighted F1; validation weighted ROC-AUC then CV weighted F1 used as tie-breakers.",
+    "hyperparameter_tuning": false
+  },
+  "data": {
+    "train_shape": [
+      642,
+      15
+    ],
+    "validation_shape": [
+      138,
+      15
+    ],
+    "train_target_counts": {
+      "0": 286,
+      "1": 185,
+      "2": 76,
+      "3": 75,
+      "4": 20
+    },
+    "validation_target_counts": {
+      "0": 62,
+      "1": 40,
+      "2": 16,
+      "3": 16,
+      "4": 4
+    }
+  },
+  "cross_validation_results": {
+    "Logistic Regression": {
+      "training_time_seconds": 0.69,
+      "cv_accuracy_mean": 0.5452,
+      "cv_accuracy_std": 0.0532,
+      "cv_precision_macro_mean": 0.4175,
+      "cv_precision_macro_std": 0.054,
+      "cv_precision_weighted_mean": 0.5983,
+      "cv_precision_weighted_std": 0.0431,
+      "cv_recall_macro_mean": 0.4521,
+      "cv_recall_macro_std": 0.0838,
+      "cv_recall_weighted_mean": 0.5452,
+      "cv_recall_weighted_std": 0.0532,
+      "cv_f1_macro_mean": 0.419,
+      "cv_f1_macro_std": 0.0614,
+      "cv_f1_weighted_mean": 0.5645,
+      "cv_f1_weighted_std": 0.0477,
+      "cv_roc_auc_ovr_macro_mean": 0.7585,
+      "cv_roc_auc_ovr_macro_std": 0.0283,
+      "cv_roc_auc_ovr_weighted_mean": 0.7919,
+      "cv_roc_auc_ovr_weighted_std": 0.0312
+    },
+    "Decision Tree": {
+      "training_time_seconds": 0.53,
+      "cv_accuracy_mean": 0.4003,
+      "cv_accuracy_std": 0.0293,
+      "cv_precision_macro_mean": 0.3096,
+      "cv_precision_macro_std": 0.0202,
+      "cv_precision_weighted_mean": 0.4984,
+      "cv_precision_weighted_std": 0.0321,
+      "cv_recall_macro_mean": 0.3162,
+      "cv_recall_macro_std": 0.0175,
+      "cv_recall_weighted_mean": 0.4003,
+      "cv_recall_weighted_std": 0.0293,
+      "cv_f1_macro_mean": 0.289,
+      "cv_f1_macro_std": 0.0202,
+      "cv_f1_weighted_mean": 0.4333,
+      "cv_f1_weighted_std": 0.0293,
+      "cv_roc_auc_ovr_macro_mean": 0.6594,
+      "cv_roc_auc_ovr_macro_std": 0.025,
+      "cv_roc_auc_ovr_weighted_mean": 0.7125,
+      "cv_roc_auc_ovr_weighted_std": 0.0324
+    },
+    "Random Forest": {
+      "training_time_seconds": 1.51,
+      "cv_accuracy_mean": 0.5047,
+      "cv_accuracy_std": 0.0387,
+      "cv_precision_macro_mean": 0.3578,
+      "cv_precision_macro_std": 0.0404,
+      "cv_precision_weighted_mean": 0.528,
+      "cv_precision_weighted_std": 0.0397,
+      "cv_recall_macro_mean": 0.377,
+      "cv_recall_macro_std": 0.0551,
+      "cv_recall_weighted_mean": 0.5047,
+      "cv_recall_weighted_std": 0.0387,
+      "cv_f1_macro_mean": 0.3545,
+      "cv_f1_macro_std": 0.0412,
+      "cv_f1_weighted_mean": 0.5121,
+      "cv_f1_weighted_std": 0.0378,
+      "cv_roc_auc_ovr_macro_mean": 0.7598,
+      "cv_roc_auc_ovr_macro_std": 0.0139,
+      "cv_roc_auc_ovr_weighted_mean": 0.7893,
+      "cv_roc_auc_ovr_weighted_std": 0.0234
+    },
+    "Gradient Boosting": {
+      "training_time_seconds": 4.46,
+      "cv_accuracy_mean": 0.5482,
+      "cv_accuracy_std": 0.0254,
+      "cv_precision_macro_mean": 0.3501,
+      "cv_precision_macro_std": 0.0281,
+      "cv_precision_weighted_mean": 0.5309,
+      "cv_precision_weighted_std": 0.0178,
+      "cv_recall_macro_mean": 0.3574,
+      "cv_recall_macro_std": 0.0294,
+      "cv_recall_weighted_mean": 0.5482,
+      "cv_recall_weighted_std": 0.0254,
+      "cv_f1_macro_mean": 0.3512,
+      "cv_f1_macro_std": 0.0286,
+      "cv_f1_weighted_mean": 0.5367,
+      "cv_f1_weighted_std": 0.0202,
+      "cv_roc_auc_ovr_macro_mean": 0.7421,
+      "cv_roc_auc_ovr_macro_std": 0.0262,
+      "cv_roc_auc_ovr_weighted_mean": 0.78,
+      "cv_roc_auc_ovr_weighted_std": 0.0209
+    }
+  },
+  "validation_results": {
+    "Logistic Regression": {
+      "metrics": {
+        "accuracy": 0.471,
+        "precision_macro": 0.3491,
+        "precision_weighted": 0.5346,
+        "recall_macro": 0.3202,
+        "recall_weighted": 0.471,
+        "f1_macro": 0.3308,
+        "f1_weighted": 0.4979,
+        "confusion_matrix": [
+          [
+            45,
+            9,
+            3,
+            1,
+            4
+          ],
+          [
+            10,
+            10,
+            7,
+            3,
+            10
+          ],
+          [
+            0,
+            4,
+            5,
+            5,
+            2
+          ],
+          [
+            1,
+            2,
+            5,
+            5,
+            3
+          ],
+          [
+            0,
+            2,
+            1,
+            1,
+            0
+          ]
+        ],
+        "roc_auc_ovr_macro": 0.6962,
+        "roc_auc_ovr_weighted": 0.7724
+      }
+    },
+    "Decision Tree": {
+      "metrics": {
+        "accuracy": 0.3986,
+        "precision_macro": 0.2627,
+        "precision_weighted": 0.4587,
+        "recall_macro": 0.2676,
+        "recall_weighted": 0.3986,
+        "f1_macro": 0.2522,
+        "f1_weighted": 0.4171,
+        "confusion_matrix": [
+          [
+            38,
+            12,
+            5,
+            5,
+            2
+          ],
+          [
+            11,
+            9,
+            12,
+            3,
+            5
+          ],
+          [
+            1,
+            2,
+            8,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            7,
+            0,
+            6
+          ],
+          [
+            0,
+            2,
+            2,
+            0,
+            0
+          ]
+        ],
+        "roc_auc_ovr_macro": 0.6589,
+        "roc_auc_ovr_weighted": 0.7008
+      }
+    },
+    "Random Forest": {
+      "metrics": {
+        "accuracy": 0.5,
+        "precision_macro": 0.3027,
+        "precision_weighted": 0.4853,
+        "recall_macro": 0.3256,
+        "recall_weighted": 0.5,
+        "f1_macro": 0.3089,
+        "f1_weighted": 0.4911,
+        "confusion_matrix": [
+          [
+            49,
+            11,
+            2,
+            0,
+            0
+          ],
+          [
+            13,
+            16,
+            6,
+            3,
+            2
+          ],
+          [
+            1,
+            6,
+            2,
+            6,
+            1
+          ],
+          [
+            2,
+            4,
+            5,
+            1,
+            4
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            1
+          ]
+        ],
+        "roc_auc_ovr_macro": 0.7298,
+        "roc_auc_ovr_weighted": 0.7673
+      }
+    },
+    "Gradient Boosting": {
+      "metrics": {
+        "accuracy": 0.5797,
+        "precision_macro": 0.3802,
+        "precision_weighted": 0.5598,
+        "recall_macro": 0.381,
+        "recall_weighted": 0.5797,
+        "f1_macro": 0.3766,
+        "f1_weighted": 0.5659,
+        "confusion_matrix": [
+          [
+            53,
+            9,
+            0,
+            0,
+            0
+          ],
+          [
+            12,
+            17,
+            9,
+            2,
+            0
+          ],
+          [
+            2,
+            5,
+            5,
+            4,
+            0
+          ],
+          [
+            2,
+            3,
+            6,
+            5,
+            0
+          ],
+          [
+            1,
+            0,
+            2,
+            1,
+            0
+          ]
+        ],
+        "roc_auc_ovr_macro": 0.7236,
+        "roc_auc_ovr_weighted": 0.7907
+      }
+    }
+  },
+  "strongest_candidate": {
+    "model": "Gradient Boosting",
+    "validation_metrics": {
+      "accuracy": 0.5797,
+      "precision_macro": 0.3802,
+      "precision_weighted": 0.5598,
+      "recall_macro": 0.381,
+      "recall_weighted": 0.5797,
+      "f1_macro": 0.3766,
+      "f1_weighted": 0.5659,
+      "confusion_matrix": [
+        [
+          53,
+          9,
+          0,
+          0,
+          0
+        ],
+        [
+          12,
+          17,
+          9,
+          2,
+          0
+        ],
+        [
+          2,
+          5,
+          5,
+          4,
+          0
+        ],
+        [
+          2,
+          3,
+          6,
+          5,
+          0
+        ],
+        [
+          1,
+          0,
+          2,
+          1,
+          0
+        ]
+      ],
+      "roc_auc_ovr_macro": 0.7236,
+      "roc_auc_ovr_weighted": 0.7907
+    },
+    "cv_metrics": {
+      "training_time_seconds": 4.46,
+      "cv_accuracy_mean": 0.5482,
+      "cv_accuracy_std": 0.0254,
+      "cv_precision_macro_mean": 0.3501,
+      "cv_precision_macro_std": 0.0281,
+      "cv_precision_weighted_mean": 0.5309,
+      "cv_precision_weighted_std": 0.0178,
+      "cv_recall_macro_mean": 0.3574,
+      "cv_recall_macro_std": 0.0294,
+      "cv_recall_weighted_mean": 0.5482,
+      "cv_recall_weighted_std": 0.0254,
+      "cv_f1_macro_mean": 0.3512,
+      "cv_f1_macro_std": 0.0286,
+      "cv_f1_weighted_mean": 0.5367,
+      "cv_f1_weighted_std": 0.0202,
+      "cv_roc_auc_ovr_macro_mean": 0.7421,
+      "cv_roc_auc_ovr_macro_std": 0.0262,
+      "cv_roc_auc_ovr_weighted_mean": 0.78,
+      "cv_roc_auc_ovr_weighted_std": 0.0209
+    }
+  },
+  "files_created": [
+    "models\\heart\\baselines\\logistic_regression_baseline_pipeline.joblib",
+    "models\\heart\\baselines\\decision_tree_baseline_pipeline.joblib",
+    "models\\heart\\baselines\\random_forest_baseline_pipeline.joblib",
+    "models\\heart\\baselines\\gradient_boosting_baseline_pipeline.joblib",
+    "reports\\figures\\16_heart_baseline_validation_confusion_matrices.png",
+    "reports/heart_disease_baseline_model_report.json",
+    "reports/heart_disease_baseline_model_report.md"
+  ]
+}

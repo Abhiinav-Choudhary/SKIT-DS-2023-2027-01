@@ -1,0 +1,200 @@
+{
+  "target_definition": "Existing multiclass `num` target with classes [0, 1, 2, 3, 4].",
+  "model": {
+    "selected_model": "Logistic Regression",
+    "artifact": "models\\heart\\tuned\\heart_disease_selected_tuned_pipeline.joblib",
+    "loaded_pipeline_steps": [
+      "features",
+      "clf"
+    ],
+    "classifier_classes": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "data": {
+    "test_shape": [
+      138,
+      15
+    ],
+    "test_target_counts": {
+      "0": 62,
+      "1": 40,
+      "2": 16,
+      "3": 16,
+      "4": 4
+    }
+  },
+  "test_metrics": {
+    "accuracy": 0.4783,
+    "precision_macro": 0.3615,
+    "precision_weighted": 0.5608,
+    "recall_macro": 0.398,
+    "recall_weighted": 0.4783,
+    "f1_macro": 0.3528,
+    "f1_weighted": 0.5104,
+    "confusion_matrix": [
+      [
+        42,
+        10,
+        1,
+        5,
+        4
+      ],
+      [
+        8,
+        15,
+        3,
+        9,
+        5
+      ],
+      [
+        0,
+        2,
+        6,
+        5,
+        3
+      ],
+      [
+        0,
+        5,
+        7,
+        1,
+        3
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        2
+      ]
+    ],
+    "per_class": {
+      "0": {
+        "precision": 0.84,
+        "recall": 0.6774193548387096,
+        "f1-score": 0.75,
+        "support": 62.0
+      },
+      "1": {
+        "precision": 0.46875,
+        "recall": 0.375,
+        "f1-score": 0.4166666666666667,
+        "support": 40.0
+      },
+      "2": {
+        "precision": 0.3333333333333333,
+        "recall": 0.375,
+        "f1-score": 0.35294117647058826,
+        "support": 16.0
+      },
+      "3": {
+        "precision": 0.047619047619047616,
+        "recall": 0.0625,
+        "f1-score": 0.05405405405405406,
+        "support": 16.0
+      },
+      "4": {
+        "precision": 0.11764705882352941,
+        "recall": 0.5,
+        "f1-score": 0.19047619047619047,
+        "support": 4.0
+      },
+      "accuracy": 0.4782608695652174,
+      "macro avg": {
+        "precision": 0.36146988795518203,
+        "recall": 0.3979838709677419,
+        "f1-score": 0.35282761753349995,
+        "support": 138.0
+      },
+      "weighted avg": {
+        "precision": 0.5608393212357405,
+        "recall": 0.4782608695652174,
+        "f1-score": 0.5104383704127949,
+        "support": 138.0
+      }
+    },
+    "roc_auc_ovr_macro": 0.755,
+    "roc_auc_ovr_weighted": 0.7816
+  },
+  "training_cv_metrics_from_tuning_report": {
+    "search_class": "GridSearchCV",
+    "best_params": {
+      "clf__C": 0.3,
+      "clf__class_weight": "balanced"
+    },
+    "best_index": 6,
+    "refit_metric": "f1_weighted",
+    "best_cv_f1_weighted": 0.5671,
+    "best_cv_accuracy": 0.5483,
+    "best_cv_precision_macro": 0.4135,
+    "best_cv_precision_weighted": 0.6014,
+    "best_cv_recall_macro": 0.4495,
+    "best_cv_recall_weighted": 0.5483,
+    "best_cv_f1_macro": 0.4139,
+    "best_cv_roc_auc_ovr_macro": 0.7659,
+    "best_cv_roc_auc_ovr_weighted": 0.7954,
+    "best_cv_f1_weighted_std": 0.0443,
+    "best_cv_roc_auc_ovr_weighted_std": 0.0297,
+    "candidates_evaluated": 14,
+    "total_fit_count": 70,
+    "duration_seconds": 12.88
+  },
+  "training_cv_vs_test": {
+    "accuracy": {
+      "training_cv": 0.5483,
+      "test": 0.4783,
+      "delta_test_minus_cv": -0.07
+    },
+    "precision_macro": {
+      "training_cv": 0.4135,
+      "test": 0.3615,
+      "delta_test_minus_cv": -0.052
+    },
+    "precision_weighted": {
+      "training_cv": 0.6014,
+      "test": 0.5608,
+      "delta_test_minus_cv": -0.0406
+    },
+    "recall_macro": {
+      "training_cv": 0.4495,
+      "test": 0.398,
+      "delta_test_minus_cv": -0.0515
+    },
+    "recall_weighted": {
+      "training_cv": 0.5483,
+      "test": 0.4783,
+      "delta_test_minus_cv": -0.07
+    },
+    "f1_macro": {
+      "training_cv": 0.4139,
+      "test": 0.3528,
+      "delta_test_minus_cv": -0.0611
+    },
+    "f1_weighted": {
+      "training_cv": 0.5671,
+      "test": 0.5104,
+      "delta_test_minus_cv": -0.0567
+    },
+    "roc_auc_ovr_macro": {
+      "training_cv": 0.7659,
+      "test": 0.755,
+      "delta_test_minus_cv": -0.0109
+    },
+    "roc_auc_ovr_weighted": {
+      "training_cv": 0.7954,
+      "test": 0.7816,
+      "delta_test_minus_cv": -0.0138
+    }
+  },
+  "model_update_from_test_results": "None. Test results were used for final evaluation only.",
+  "files_created": [
+    "reports\\figures\\17_heart_final_test_confusion_matrix.png",
+    "reports/heart_disease_final_test_evaluation_report.json",
+    "reports/heart_disease_final_test_evaluation_report.md"
+  ]
+}

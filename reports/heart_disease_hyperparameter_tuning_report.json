@@ -1,0 +1,125 @@
+{
+  "target_definition": "Existing multiclass `num` target with classes 0, 1, 2, 3, 4.",
+  "data_used": {
+    "training_split_only": true,
+    "train_shape": [
+      642,
+      15
+    ],
+    "train_target_counts": {
+      "0": 286,
+      "1": 185,
+      "2": 76,
+      "3": 75,
+      "4": 20
+    },
+    "validation_used": false,
+    "test_used": false
+  },
+  "methodology": {
+    "candidates": [
+      "Logistic Regression",
+      "Gradient Boosting"
+    ],
+    "why_these_candidates": "Baseline validation selected Gradient Boosting, while baseline training CV favored Logistic Regression, so both were tuned.",
+    "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+    "searches": {
+      "Logistic Regression": "GridSearchCV",
+      "Gradient Boosting": "RandomizedSearchCV(n_iter=16, random_state=42)"
+    },
+    "feature_pipeline": "Heart feature engineering and preprocessing are inside each sklearn Pipeline and refit inside each CV fold.",
+    "refit_metric": "f1_weighted",
+    "selection_priority": "Highest mean CV weighted F1; mean CV weighted one-vs-rest ROC-AUC then mean CV macro F1 used as tie-breakers.",
+    "hyperparameter_tuning_only": true
+  },
+  "tuning_results": {
+    "Logistic Regression": {
+      "search_class": "GridSearchCV",
+      "best_params": {
+        "clf__C": 0.3,
+        "clf__class_weight": "balanced"
+      },
+      "best_index": 6,
+      "refit_metric": "f1_weighted",
+      "best_cv_f1_weighted": 0.5671,
+      "best_cv_accuracy": 0.5483,
+      "best_cv_precision_macro": 0.4135,
+      "best_cv_precision_weighted": 0.6014,
+      "best_cv_recall_macro": 0.4495,
+      "best_cv_recall_weighted": 0.5483,
+      "best_cv_f1_macro": 0.4139,
+      "best_cv_roc_auc_ovr_macro": 0.7659,
+      "best_cv_roc_auc_ovr_weighted": 0.7954,
+      "best_cv_f1_weighted_std": 0.0443,
+      "best_cv_roc_auc_ovr_weighted_std": 0.0297,
+      "candidates_evaluated": 14,
+      "total_fit_count": 70,
+      "duration_seconds": 12.88
+    },
+    "Gradient Boosting": {
+      "search_class": "RandomizedSearchCV",
+      "best_params": {
+        "clf__min_samples_leaf": 30,
+        "clf__max_leaf_nodes": 31,
+        "clf__max_iter": 50,
+        "clf__max_depth": 3,
+        "clf__learning_rate": 0.15,
+        "clf__l2_regularization": 1.0,
+        "clf__class_weight": "balanced"
+      },
+      "best_index": 9,
+      "refit_metric": "f1_weighted",
+      "best_cv_f1_weighted": 0.5573,
+      "best_cv_accuracy": 0.5483,
+      "best_cv_precision_macro": 0.3831,
+      "best_cv_precision_weighted": 0.5745,
+      "best_cv_recall_macro": 0.3924,
+      "best_cv_recall_weighted": 0.5483,
+      "best_cv_f1_macro": 0.3829,
+      "best_cv_roc_auc_ovr_macro": 0.7419,
+      "best_cv_roc_auc_ovr_weighted": 0.7836,
+      "best_cv_f1_weighted_std": 0.0215,
+      "best_cv_roc_auc_ovr_weighted_std": 0.0208,
+      "candidates_evaluated": 16,
+      "total_fit_count": 80,
+      "duration_seconds": 75.2
+    }
+  },
+  "selected_model": {
+    "model": "Logistic Regression",
+    "selection_reason": "Logistic Regression had the highest mean CV weighted F1 among tuned candidates.",
+    "cv_metrics": {
+      "search_class": "GridSearchCV",
+      "best_params": {
+        "clf__C": 0.3,
+        "clf__class_weight": "balanced"
+      },
+      "best_index": 6,
+      "refit_metric": "f1_weighted",
+      "best_cv_f1_weighted": 0.5671,
+      "best_cv_accuracy": 0.5483,
+      "best_cv_precision_macro": 0.4135,
+      "best_cv_precision_weighted": 0.6014,
+      "best_cv_recall_macro": 0.4495,
+      "best_cv_recall_weighted": 0.5483,
+      "best_cv_f1_macro": 0.4139,
+      "best_cv_roc_auc_ovr_macro": 0.7659,
+      "best_cv_roc_auc_ovr_weighted": 0.7954,
+      "best_cv_f1_weighted_std": 0.0443,
+      "best_cv_roc_auc_ovr_weighted_std": 0.0297,
+      "candidates_evaluated": 14,
+      "total_fit_count": 70,
+      "duration_seconds": 12.88
+    },
+    "artifact": "models\\heart\\tuned\\heart_disease_selected_tuned_pipeline.joblib"
+  },
+  "files_created": [
+    "reports\\heart_disease_logistic_regression_tuning_cv_results.csv",
+    "reports\\heart_disease_gradient_boosting_tuning_cv_results.csv",
+    "models\\heart\\tuned\\logistic_regression_tuned_pipeline.joblib",
+    "models\\heart\\tuned\\gradient_boosting_tuned_pipeline.joblib",
+    "models\\heart\\tuned\\heart_disease_selected_tuned_pipeline.joblib",
+    "reports/heart_disease_hyperparameter_tuning_report.json",
+    "reports/heart_disease_hyperparameter_tuning_report.md"
+  ]
+}

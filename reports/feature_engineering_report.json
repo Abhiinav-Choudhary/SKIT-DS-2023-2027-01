@@ -1,0 +1,57 @@
+{
+  "features_before": 21,
+  "features_after": 27,
+  "engineered_features": [
+    {
+      "name": "BMI_Category",
+      "type": "Ordinal (1-6)",
+      "target_correlation": "+0.2156",
+      "description": "WHO BMI non-linear cutoff staging"
+    },
+    {
+      "name": "CardioMetabolic_Risk_Score",
+      "type": "Ordinal (0-4)",
+      "target_correlation": "+0.2999",
+      "description": "Comorbidity count (HighBP+HighChol+Heart+Stroke)"
+    },
+    {
+      "name": "HighBP_x_HighChol",
+      "type": "Binary (0/1)",
+      "target_correlation": "+0.2566",
+      "description": "Combined hypertension and high cholesterol"
+    },
+    {
+      "name": "Healthy_Lifestyle_Score",
+      "type": "Ordinal (0-5)",
+      "target_correlation": "-0.0723",
+      "description": "Habits count (Exercise+Fruits+Veggies+NoSmoke+NoAlcohol)"
+    },
+    {
+      "name": "Age_x_GenHlth",
+      "type": "Continuous/Scaled",
+      "target_correlation": "+0.3032",
+      "description": "Multiplicative interaction of top 2 predictors"
+    },
+    {
+      "name": "Sedentary_Obese",
+      "type": "Binary (0/1)",
+      "target_correlation": "+0.1508",
+      "description": "Physical inactivity combined with BMI >= 30"
+    }
+  ],
+  "leakage_audit": "PASSED - Strictly row-wise and independent of target",
+  "shapes": {
+    "train": [
+      160631,
+      27
+    ],
+    "val": [
+      34421,
+      27
+    ],
+    "test": [
+      34422,
+      27
+    ]
+  }
+}

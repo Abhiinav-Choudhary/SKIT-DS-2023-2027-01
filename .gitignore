@@ -23,3 +23,11 @@ Thumbs.db
 # Build & Coverage
 dist/
 coverage/
+
+# Python / AI-ML
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/

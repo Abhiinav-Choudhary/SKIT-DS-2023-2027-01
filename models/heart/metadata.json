@@ -1,0 +1,287 @@
+{
+  "model_name": "Tuned Logistic Regression (multiclass num target)",
+  "model_version": "1.0.0",
+  "dataset_name": "UCI Heart Disease",
+  "target_variable": "num",
+  "target_classes": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "input_feature_schema": {
+    "columns": [
+      "age",
+      "sex",
+      "cp",
+      "trestbps",
+      "chol",
+      "fbs",
+      "restecg",
+      "thalach",
+      "exang",
+      "oldpeak",
+      "slope",
+      "ca",
+      "thal"
+    ],
+    "column_count": 13,
+    "numeric_columns": [
+      "age",
+      "trestbps",
+      "chol",
+      "thalach",
+      "oldpeak"
+    ],
+    "categorical_columns": [
+      "sex",
+      "cp",
+      "fbs",
+      "restecg",
+      "exang",
+      "slope",
+      "ca",
+      "thal"
+    ],
+    "categorical_allowed_values": {
+      "sex": [
+        0.0,
+        1.0
+      ],
+      "cp": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+      ],
+      "fbs": [
+        0.0,
+        1.0
+      ],
+      "restecg": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "exang": [
+        0.0,
+        1.0
+      ],
+      "slope": [
+        1.0,
+        2.0,
+        3.0
+      ],
+      "ca": [
+        0.0,
+        1.0,
+        2.0,
+        3.0
+      ],
+      "thal": [
+        3.0,
+        6.0,
+        7.0
+      ]
+    },
+    "zero_as_missing_columns_from_existing_preprocessing": [
+      "trestbps",
+      "chol"
+    ],
+    "description": "Raw 13-feature UCI Heart Disease schema, excluding source and target."
+  },
+  "transformed_feature_names": [
+    "age",
+    "trestbps",
+    "chol",
+    "thalach",
+    "oldpeak",
+    "age_x_oldpeak",
+    "resting_bp_cholesterol_index",
+    "heart_rate_reserve_proxy",
+    "oldpeak_per_age",
+    "sex_0.0",
+    "sex_1.0",
+    "cp_1.0",
+    "cp_2.0",
+    "cp_3.0",
+    "cp_4.0",
+    "fbs_0.0",
+    "fbs_1.0",
+    "restecg_0.0",
+    "restecg_1.0",
+    "restecg_2.0",
+    "exang_0.0",
+    "exang_1.0",
+    "slope_1.0",
+    "slope_2.0",
+    "slope_3.0",
+    "ca_0.0",
+    "ca_1.0",
+    "ca_2.0",
+    "ca_3.0",
+    "thal_3.0",
+    "thal_6.0",
+    "thal_7.0",
+    "asymptomatic_chest_pain_0.0",
+    "asymptomatic_chest_pain_1.0",
+    "exercise_ischemia_signal_0.0",
+    "exercise_ischemia_signal_1.0",
+    "has_major_vessels_colored_0.0",
+    "has_major_vessels_colored_1.0",
+    "thal_reversible_defect_0.0",
+    "thal_reversible_defect_1.0",
+    "high_resting_bp_0.0",
+    "high_resting_bp_1.0",
+    "high_cholesterol_0.0",
+    "high_cholesterol_1.0",
+    "abnormal_restecg_0.0",
+    "abnormal_restecg_1.0"
+  ],
+  "transformed_feature_count": 46,
+  "pipeline_structure": "features (HeartDiseaseFeatureEngineer + ColumnTransformer) -> clf",
+  "classifier": {
+    "library": "scikit-learn",
+    "estimator": "LogisticRegression",
+    "classes": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "hyperparameters": {
+      "C": 0.3,
+      "class_weight": "balanced",
+      "solver": "lbfgs",
+      "penalty": "l2",
+      "max_iter": 3000
+    }
+  },
+  "selection": {
+    "selected_model": "Logistic Regression",
+    "selection_reason": "Logistic Regression had the highest mean CV weighted F1 among tuned candidates.",
+    "training_cv_metrics": {
+      "search_class": "GridSearchCV",
+      "best_params": {
+        "clf__C": 0.3,
+        "clf__class_weight": "balanced"
+      },
+      "best_index": 6,
+      "refit_metric": "f1_weighted",
+      "best_cv_f1_weighted": 0.5671,
+      "best_cv_accuracy": 0.5483,
+      "best_cv_precision_macro": 0.4135,
+      "best_cv_precision_weighted": 0.6014,
+      "best_cv_recall_macro": 0.4495,
+      "best_cv_recall_weighted": 0.5483,
+      "best_cv_f1_macro": 0.4139,
+      "best_cv_roc_auc_ovr_macro": 0.7659,
+      "best_cv_roc_auc_ovr_weighted": 0.7954,
+      "best_cv_f1_weighted_std": 0.0443,
+      "best_cv_roc_auc_ovr_weighted_std": 0.0297,
+      "candidates_evaluated": 14,
+      "total_fit_count": 70,
+      "duration_seconds": 12.88
+    }
+  },
+  "final_test_metrics": {
+    "accuracy": 0.4783,
+    "precision_macro": 0.3615,
+    "precision_weighted": 0.5608,
+    "recall_macro": 0.398,
+    "recall_weighted": 0.4783,
+    "f1_macro": 0.3528,
+    "f1_weighted": 0.5104,
+    "confusion_matrix": [
+      [
+        42,
+        10,
+        1,
+        5,
+        4
+      ],
+      [
+        8,
+        15,
+        3,
+        9,
+        5
+      ],
+      [
+        0,
+        2,
+        6,
+        5,
+        3
+      ],
+      [
+        0,
+        5,
+        7,
+        1,
+        3
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        2
+      ]
+    ],
+    "per_class": {
+      "0": {
+        "precision": 0.84,
+        "recall": 0.6774193548387096,
+        "f1-score": 0.75,
+        "support": 62.0
+      },
+      "1": {
+        "precision": 0.46875,
+        "recall": 0.375,
+        "f1-score": 0.4166666666666667,
+        "support": 40.0
+      },
+      "2": {
+        "precision": 0.3333333333333333,
+        "recall": 0.375,
+        "f1-score": 0.35294117647058826,
+        "support": 16.0
+      },
+      "3": {
+        "precision": 0.047619047619047616,
+        "recall": 0.0625,
+        "f1-score": 0.05405405405405406,
+        "support": 16.0
+      },
+      "4": {
+        "precision": 0.11764705882352941,
+        "recall": 0.5,
+        "f1-score": 0.19047619047619047,
+        "support": 4.0
+      },
+      "accuracy": 0.4782608695652174,
+      "macro avg": {
+        "precision": 0.36146988795518203,
+        "recall": 0.3979838709677419,
+        "f1-score": 0.35282761753349995,
+        "support": 138.0
+      },
+      "weighted avg": {
+        "precision": 0.5608393212357405,
+        "recall": 0.4782608695652174,
+        "f1-score": 0.5104383704127949,
+        "support": 138.0
+      }
+    },
+    "roc_auc_ovr_macro": 0.755,
+    "roc_auc_ovr_weighted": 0.7816
+  },
+  "metadata_created_date": "2026-10-08",
+  "artifact": {
+    "pipeline_file": "heart_disease_risk_pipeline.joblib",
+    "relative_path": "models/heart/heart_disease_risk_pipeline.joblib"
+  }
+}
