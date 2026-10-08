@@ -1,58 +1,68 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Design System — Light (Default) & Dark Mode CSS Variables
+   Light: Professional Sky-Blue + Red palette
+   Dark:  Deep navy + bright sky-blue + red accents
+   ============================================================ */
+
 :root {
-  /* Color Palette - High-tech Clinical Dark Mode */
-  --bg-main: #070b14;
-  --bg-surface: #0d1527;
-  --bg-card: #111c34;
-  --bg-card-hover: #162442;
-  --bg-card-glass: rgba(17, 28, 52, 0.72);
-  --bg-elevated: #1a294b;
+  /* Backgrounds */
+  --bg-main: #f0f4f8;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-card-glass: rgba(255, 255, 255, 0.9);
+  --bg-elevated: #ffffff;
 
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-card: rgba(148, 163, 184, 0.12);
-  --border-accent: rgba(6, 182, 212, 0.35);
+  /* Borders */
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-card: rgba(0, 0, 0, 0.09);
+  --border-accent: rgba(14, 165, 233, 0.4);
 
-  /* Brand Accents */
-  --primary: #06b6d4;
-  --primary-hover: #0891b2;
-  --primary-light: #22d3ee;
-  --primary-dim: rgba(6, 182, 212, 0.12);
+  /* Brand — Sky Blue Primary */
+  --primary: #0ea5e9;
+  --primary-hover: #0284c7;
+  --primary-light: #38bdf8;
+  --primary-dim: rgba(14, 165, 233, 0.1);
 
-  --secondary: #6366f1;
-  --secondary-hover: #4f46e5;
-  --secondary-dim: rgba(99, 102, 241, 0.12);
+  /* Brand — Red Secondary */
+  --secondary: #e11d48;
+  --secondary-hover: #be123c;
+  --secondary-dim: rgba(225, 29, 72, 0.1);
 
-  --accent-cyan: #00f2fe;
-  --accent-purple: #a855f7;
+  --accent-cyan: #0ea5e9;
+  --accent-purple: #e11d48;
 
-  /* Clinical Status Colors */
+  /* Status */
   --status-low: #10b981;
-  --status-low-bg: rgba(16, 185, 129, 0.12);
+  --status-low-bg: rgba(16, 185, 129, 0.1);
   --status-low-border: rgba(16, 185, 129, 0.3);
 
   --status-mod: #f59e0b;
-  --status-mod-bg: rgba(245, 158, 11, 0.12);
+  --status-mod-bg: rgba(245, 158, 11, 0.1);
   --status-mod-border: rgba(245, 158, 11, 0.3);
 
   --status-high: #f97316;
-  --status-high-bg: rgba(249, 115, 22, 0.12);
+  --status-high-bg: rgba(249, 115, 22, 0.1);
   --status-high-border: rgba(249, 115, 22, 0.3);
 
   --status-critical: #ef4444;
-  --status-critical-bg: rgba(239, 68, 68, 0.15);
-  --status-critical-border: rgba(239, 68, 68, 0.35);
+  --status-critical-bg: rgba(239, 68, 68, 0.12);
+  --status-critical-border: rgba(239, 68, 68, 0.3);
 
-  /* Typography Colors */
-  --text-main: #f8fafc;
-  --text-secondary: #94a3b8;
+  /* Typography */
+  --text-main: #0f172a;
+  --text-secondary: #334155;
   --text-muted: #64748b;
-  --text-link: #38bdf8;
+  --text-link: #0ea5e9;
 
-  /* Shadows & Glows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.6);
-  --glow-cyan: 0 0 20px rgba(6, 182, 212, 0.25);
-  --glow-red: 0 0 20px rgba(239, 68, 68, 0.3);
+  /* Shadows */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 10px 32px rgba(0,0,0,0.13);
+  --glow-cyan: 0 0 18px rgba(14, 165, 233, 0.2);
+  --glow-red: 0 0 18px rgba(225, 29, 72, 0.2);
 
   /* Fonts */
   --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -65,6 +75,40 @@
   --radius-lg: 20px;
   --radius-full: 9999px;
 }
+
+/* ---- DARK MODE overrides (applied when <html> has class="dark") ---- */
+.dark {
+  --bg-main: #060d1a;
+  --bg-surface: #0b1526;
+  --bg-card: #0f1e35;
+  --bg-card-hover: #152540;
+  --bg-card-glass: rgba(15, 30, 53, 0.85);
+  --bg-elevated: #162b4a;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-card: rgba(148, 163, 184, 0.10);
+  --border-accent: rgba(14, 165, 233, 0.3);
+
+  --primary-dim: rgba(14, 165, 233, 0.12);
+  --secondary-dim: rgba(225, 29, 72, 0.12);
+
+  --text-main: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-link: #38bdf8;
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.5);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,0.65);
+  --glow-cyan: 0 0 22px rgba(14, 165, 233, 0.28);
+  --glow-red: 0 0 22px rgba(225, 29, 72, 0.28);
+
+  --status-low-bg: rgba(16, 185, 129, 0.12);
+  --status-mod-bg: rgba(245, 158, 11, 0.12);
+  --status-high-bg: rgba(249, 115, 22, 0.12);
+  --status-critical-bg: rgba(239, 68, 68, 0.15);
+}
+
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -92,7 +136,7 @@ html, body {
   background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #e2e8f0;
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -117,8 +161,8 @@ h1, h2, h3, h4, h5, h6 {
 .app-container {
   display: flex;
   min-height: 100vh;
-  background: radial-gradient(circle at 10% 10%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
-              radial-gradient(circle at 90% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+  background: radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.05) 0%, transparent 40%),
+              radial-gradient(circle at 90% 90%, rgba(225, 29, 72, 0.05) 0%, transparent 50%),
               var(--bg-main);
 }
 
@@ -155,7 +199,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glass-card:hover {
-  border-color: rgba(6, 182, 212, 0.3);
+  border-color: rgba(37, 99, 235, 0.3);
 }
 
 /* Buttons */
@@ -178,15 +222,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, #0891b2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #22d3ee 0%, var(--primary) 100%);
+  background: linear-gradient(135deg, #60a5fa 0%, var(--primary) 100%);
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
 }
 
 .btn-secondary {
@@ -299,7 +343,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-input, .form-select {
   width: 100%;
   padding: 10px 14px;
-  background: rgba(15, 23, 42, 0.6);
+  background: #ffffff;
   border: 1px solid var(--border-card);
   border-radius: var(--radius-sm);
   color: var(--text-main);
@@ -311,8 +355,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-input:focus, .form-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
-  background: rgba(15, 23, 42, 0.85);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background: #ffffff;
 }
 
 .form-input::placeholder {
@@ -331,7 +375,7 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-appearance: none;
   height: 6px;
   border-radius: 4px;
-  background: #1e293b;
+  background: #e2e8f0;
   outline: none;
   cursor: pointer;
 }
@@ -344,7 +388,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--primary-light);
   cursor: pointer;
   border: 2px solid #0f172a;
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.6);
   transition: transform 0.1s;
 }
 
