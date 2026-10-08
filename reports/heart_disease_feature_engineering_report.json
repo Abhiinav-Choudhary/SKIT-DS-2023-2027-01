@@ -1,0 +1,234 @@
+{
+  "target_definition_used": "Using existing multiclass target `num` with values [0, 1, 2, 3, 4]. Existing Heart code and reports define `num` as the target and do not define a project-level binary remapping.",
+  "target_evidence_checked": {
+    "src_preprocessing_heart_disease": "`HEART_DISEASE_TARGET = 'num'`",
+    "heart_disease_eda_report": "Existing multiclass `num` target, values 0-4; no binary target created.",
+    "uci_metadata_note": "`heart-disease.names` documents `num` as integer-valued 0 to 4 and notes that past Cleveland experiments often used presence-vs-absence; this project has not adopted that remapping."
+  },
+  "split_shapes": {
+    "train_input": [
+      642,
+      15
+    ],
+    "val_input": [
+      138,
+      15
+    ],
+    "test_input": [
+      138,
+      15
+    ],
+    "train_transformed": [
+      642,
+      46
+    ],
+    "val_transformed": [
+      138,
+      46
+    ],
+    "test_transformed": [
+      138,
+      46
+    ]
+  },
+  "target_counts": {
+    "train": {
+      "0": 286,
+      "1": 185,
+      "2": 76,
+      "3": 75,
+      "4": 20
+    },
+    "val": {
+      "0": 62,
+      "1": 40,
+      "2": 16,
+      "3": 16,
+      "4": 4
+    },
+    "test": {
+      "0": 62,
+      "1": 40,
+      "2": 16,
+      "3": 16,
+      "4": 4
+    }
+  },
+  "feature_counts": {
+    "raw_predictors_before_engineering": 13,
+    "engineered_features_added": 11,
+    "raw_predictors_after_engineering": 24,
+    "final_transformed_feature_count": 46
+  },
+  "features_added": {
+    "numeric": [
+      "age_x_oldpeak",
+      "resting_bp_cholesterol_index",
+      "heart_rate_reserve_proxy",
+      "oldpeak_per_age"
+    ],
+    "categorical_or_binary": [
+      "asymptomatic_chest_pain",
+      "exercise_ischemia_signal",
+      "has_major_vessels_colored",
+      "thal_reversible_defect",
+      "high_resting_bp",
+      "high_cholesterol",
+      "abnormal_restecg"
+    ],
+    "descriptions": {
+      "age_x_oldpeak": "age multiplied by exercise-induced ST depression (`oldpeak`)",
+      "resting_bp_cholesterol_index": "resting blood pressure multiplied by serum cholesterol",
+      "heart_rate_reserve_proxy": "(220 - age) - maximum heart rate achieved (`thalach`)",
+      "oldpeak_per_age": "exercise-induced ST depression divided by age",
+      "asymptomatic_chest_pain": "1 when `cp` equals 4, otherwise 0; missing preserved",
+      "exercise_ischemia_signal": "1 when `exang` is 1 or `oldpeak` is above 0, otherwise 0 when observed",
+      "has_major_vessels_colored": "1 when `ca` is above 0, otherwise 0; missing preserved",
+      "thal_reversible_defect": "1 when `thal` equals 7, otherwise 0; missing preserved",
+      "high_resting_bp": "1 when `trestbps` is at least 140, otherwise 0; missing preserved",
+      "high_cholesterol": "1 when `chol` is at least 240, otherwise 0; missing preserved",
+      "abnormal_restecg": "1 when `restecg` is above 0, otherwise 0; missing preserved"
+    }
+  },
+  "features_removed_from_model_input": [
+    "source",
+    "num"
+  ],
+  "features_transformed": {
+    "numeric_pipeline": "median imputation followed by StandardScaler",
+    "categorical_pipeline": "most-frequent imputation followed by OneHotEncoder(handle_unknown='ignore')",
+    "numeric_features_after_engineering": [
+      "age",
+      "trestbps",
+      "chol",
+      "thalach",
+      "oldpeak",
+      "age_x_oldpeak",
+      "resting_bp_cholesterol_index",
+      "heart_rate_reserve_proxy",
+      "oldpeak_per_age"
+    ],
+    "categorical_features_after_engineering": [
+      "sex",
+      "cp",
+      "fbs",
+      "restecg",
+      "exang",
+      "slope",
+      "ca",
+      "thal",
+      "asymptomatic_chest_pain",
+      "exercise_ischemia_signal",
+      "has_major_vessels_colored",
+      "thal_reversible_defect",
+      "high_resting_bp",
+      "high_cholesterol",
+      "abnormal_restecg"
+    ]
+  },
+  "engineered_feature_missing_counts_train": {
+    "age_x_oldpeak": 41,
+    "resting_bp_cholesterol_index": 181,
+    "heart_rate_reserve_proxy": 37,
+    "oldpeak_per_age": 41,
+    "asymptomatic_chest_pain": 0,
+    "exercise_ischemia_signal": 37,
+    "has_major_vessels_colored": 414,
+    "thal_reversible_defect": 333,
+    "high_resting_bp": 41,
+    "high_cholesterol": 151,
+    "abnormal_restecg": 2
+  },
+  "engineered_feature_unique_counts_train": {
+    "age_x_oldpeak": 238,
+    "resting_bp_cholesterol_index": 392,
+    "heart_rate_reserve_proxy": 105,
+    "oldpeak_per_age": 252,
+    "asymptomatic_chest_pain": 2,
+    "exercise_ischemia_signal": 2,
+    "has_major_vessels_colored": 2,
+    "thal_reversible_defect": 2,
+    "high_resting_bp": 2,
+    "high_cholesterol": 2,
+    "abnormal_restecg": 2
+  },
+  "engineered_feature_spearman_correlation_with_target_train_only": {
+    "age_x_oldpeak": 0.4226,
+    "resting_bp_cholesterol_index": 0.1702,
+    "heart_rate_reserve_proxy": 0.3131,
+    "oldpeak_per_age": 0.3967,
+    "asymptomatic_chest_pain": 0.4767,
+    "exercise_ischemia_signal": 0.4027,
+    "has_major_vessels_colored": 0.5327,
+    "thal_reversible_defect": 0.3656,
+    "high_resting_bp": 0.1017,
+    "high_cholesterol": 0.0912,
+    "abnormal_restecg": 0.1473
+  },
+  "final_feature_names": [
+    "age",
+    "trestbps",
+    "chol",
+    "thalach",
+    "oldpeak",
+    "age_x_oldpeak",
+    "resting_bp_cholesterol_index",
+    "heart_rate_reserve_proxy",
+    "oldpeak_per_age",
+    "sex_0.0",
+    "sex_1.0",
+    "cp_1.0",
+    "cp_2.0",
+    "cp_3.0",
+    "cp_4.0",
+    "fbs_0.0",
+    "fbs_1.0",
+    "restecg_0.0",
+    "restecg_1.0",
+    "restecg_2.0",
+    "exang_0.0",
+    "exang_1.0",
+    "slope_1.0",
+    "slope_2.0",
+    "slope_3.0",
+    "ca_0.0",
+    "ca_1.0",
+    "ca_2.0",
+    "ca_3.0",
+    "thal_3.0",
+    "thal_6.0",
+    "thal_7.0",
+    "asymptomatic_chest_pain_0.0",
+    "asymptomatic_chest_pain_1.0",
+    "exercise_ischemia_signal_0.0",
+    "exercise_ischemia_signal_1.0",
+    "has_major_vessels_colored_0.0",
+    "has_major_vessels_colored_1.0",
+    "thal_reversible_defect_0.0",
+    "thal_reversible_defect_1.0",
+    "high_resting_bp_0.0",
+    "high_resting_bp_1.0",
+    "high_cholesterol_0.0",
+    "high_cholesterol_1.0",
+    "abnormal_restecg_0.0",
+    "abnormal_restecg_1.0"
+  ],
+  "leakage_checks": {
+    "target_column_excluded_from_model_features": "PASSED",
+    "source_column_excluded_from_model_features": "PASSED",
+    "engineered_features_are_row_wise": "PASSED",
+    "no_target_encoding_or_target_derived_features": "PASSED",
+    "pipeline_fit_only_on_training_split": "PASSED",
+    "validation_and_test_transformed_without_refit": "PASSED",
+    "target_distribution_preserved_in_saved_feature_files": "PASSED"
+  },
+  "files_created": [
+    "data\\processed\\heart_disease\\features\\heart_disease_train_features.csv",
+    "data\\processed\\heart_disease\\features\\heart_disease_val_features.csv",
+    "data\\processed\\heart_disease\\features\\heart_disease_test_features.csv",
+    "models\\heart\\heart_disease_feature_pipeline.joblib",
+    "reports/heart_disease_feature_engineering_report.json",
+    "reports/heart_disease_feature_engineering_report.md"
+  ],
+  "models_trained": false
+}

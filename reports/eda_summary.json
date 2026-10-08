@@ -1,0 +1,49 @@
+{
+  "dataset_analyzed": "CDC Diabetes Clean Training Partition (70% split)",
+  "sample_size": 160631,
+  "target_prevalence_pct": 15.29,
+  "top_positive_correlations": {
+    "GenHlth": 0.2752,
+    "HighBP": 0.2534,
+    "DiffWalk": 0.204,
+    "BMI": 0.2038,
+    "HighChol": 0.1919,
+    "Age": 0.1775,
+    "HeartDiseaseorAttack": 0.167,
+    "PhysHlth": 0.1531,
+    "Stroke": 0.0988,
+    "CholCheck": 0.0717,
+    "MentHlth": 0.0525,
+    "Smoker": 0.0463,
+    "Sex": 0.0322,
+    "AnyHealthcare": 0.0259,
+    "NoDocbcCost": 0.0195,
+    "Fruits": -0.0236,
+    "Veggies": -0.0404,
+    "HvyAlcoholConsump": -0.0657,
+    "PhysActivity": -0.0987,
+    "Education": -0.1015,
+    "Income": -0.1405
+  },
+  "bmi_stats_by_class": {
+    "non_diabetic": {
+      "median": 27.0,
+      "mean": 28.1,
+      "q25": 24.0,
+      "q75": 31.0
+    },
+    "diabetic": {
+      "median": 31.0,
+      "mean": 31.94,
+      "q25": 27.0,
+      "q75": 36.0
+    }
+  },
+  "figures_generated": [
+    "01_target_distribution_and_imbalance.png",
+    "02_numerical_distributions_and_outliers.png",
+    "03_binary_clinical_lifestyle_risk_prevalence.png",
+    "04_ordinal_risk_gradients.png",
+    "05_correlation_heatmap_and_feature_associations.png"
+  ]
+}
