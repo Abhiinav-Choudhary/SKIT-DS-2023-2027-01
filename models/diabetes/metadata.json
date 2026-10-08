@@ -1,0 +1,123 @@
+{
+  "model_name": "Tuned HistGradientBoostingClassifier (Gradient Boosting champion)",
+  "model_version": "1.0.0",
+  "dataset_name": "CDC Diabetes Health Indicators (BRFSS 2015)",
+  "target_variable": "Diabetes_binary",
+  "input_feature_schema": {
+    "columns": [
+      "HighBP",
+      "HighChol",
+      "CholCheck",
+      "BMI",
+      "Smoker",
+      "Stroke",
+      "HeartDiseaseorAttack",
+      "PhysActivity",
+      "Fruits",
+      "Veggies",
+      "HvyAlcoholConsump",
+      "AnyHealthcare",
+      "NoDocbcCost",
+      "GenHlth",
+      "MentHlth",
+      "PhysHlth",
+      "DiffWalk",
+      "Sex",
+      "Age",
+      "Education",
+      "Income"
+    ],
+    "column_count": 21,
+    "description": "Raw BRFSS 2015 survey fields (same order as CDC binary dataset, excluding target)."
+  },
+  "transformed_feature_names": [
+    "BMI",
+    "MentHlth",
+    "PhysHlth",
+    "Age_x_GenHlth",
+    "GenHlth",
+    "Age",
+    "Education",
+    "Income",
+    "BMI_Category",
+    "CardioMetabolic_Risk_Score",
+    "Healthy_Lifestyle_Score",
+    "HighBP",
+    "HighChol",
+    "CholCheck",
+    "Smoker",
+    "Stroke",
+    "HeartDiseaseorAttack",
+    "PhysActivity",
+    "Fruits",
+    "Veggies",
+    "HvyAlcoholConsump",
+    "AnyHealthcare",
+    "NoDocbcCost",
+    "DiffWalk",
+    "Sex",
+    "HighBP_x_HighChol",
+    "Sedentary_Obese"
+  ],
+  "preprocessing_approach": {
+    "pipeline_structure": "preprocess (DiabetesFeatureEngineer + ColumnTransformer) -> clf",
+    "feature_engineering": [
+      "BMI_Category",
+      "CardioMetabolic_Risk_Score",
+      "HighBP_x_HighChol",
+      "Healthy_Lifestyle_Score",
+      "Age_x_GenHlth",
+      "Sedentary_Obese"
+    ],
+    "scaling": "StandardScaler on continuous numerical columns (BMI, MentHlth, PhysHlth, Age_x_GenHlth)",
+    "ordinal_and_binary": "passthrough (no encoding)",
+    "transformed_feature_count": 27
+  },
+  "selected_hyperparameters": {
+    "min_samples_leaf": 75,
+    "max_iter": 125,
+    "max_depth": null,
+    "learning_rate": 0.08,
+    "l2_regularization": 10.0
+  },
+  "cross_validation_methodology": {
+    "search_algorithm": "RandomizedSearchCV",
+    "cv_strategy": "StratifiedKFold (5 splits)",
+    "scoring_metric": "roc_auc",
+    "train_only_tuning": true,
+    "preprocessing_in_pipeline": true,
+    "champion_selection": "Highest train CV ROC-AUC between tuned Gradient Boosting and Random Forest",
+    "best_score_cv_roc_auc": 0.8139033572568574,
+    "candidates_evaluated": [
+      "Gradient Boosting",
+      "Random Forest"
+    ]
+  },
+  "classifier": {
+    "library": "scikit-learn",
+    "estimator": "HistGradientBoostingClassifier",
+    "class_weight": "balanced"
+  },
+  "training_date": "2026-10-08",
+  "training_samples": 160631,
+  "final_test_metrics": {
+    "accuracy": 0.7116,
+    "precision": 0.321,
+    "recall": 0.7941,
+    "specificity": 0.6967,
+    "f1": 0.4572,
+    "balanced_accuracy": 0.7454,
+    "confusion_matrix": {
+      "tn": 20314,
+      "fp": 8843,
+      "fn": 1084,
+      "tp": 4181
+    },
+    "roc_auc": 0.8217,
+    "pr_auc": 0.4522
+  },
+  "artifact": {
+    "pipeline_file": "diabetes_risk_pipeline.joblib",
+    "relative_path": "models/diabetes/diabetes_risk_pipeline.joblib"
+  }
+}
