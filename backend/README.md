@@ -7,11 +7,11 @@ Backend service providing RESTful architecture, MongoDB connectivity, and JWT-ba
 ## 1. Project Overview & Current Phase
 
 - **Project ID**: SKIT/DS/2023-2027/01
-- **Current Development Phase**: Backend Architecture + Authentication & Authorization (Phase 1)
+- **Current Development Phase**: Backend Architecture, Authentication, and Health Records
 - **Status**: Implemented & Verified
 - **Assigned Lead**: Abhinav Kumar Chaudhary (Backend & API Architecture)
 
-*Note: Future components (Health Records CRUD, AI Prediction Services, Health Monitoring, Alert Systems) belong to subsequent project phases and are not yet implemented.*
+*Note: AI prediction services, health monitoring, and alert systems belong to subsequent project phases and are not yet implemented.*
 
 ---
 
@@ -36,23 +36,28 @@ backend/
 │   ├── config/
 │   │   └── db.js               # MongoDB Mongoose connection
 │   ├── controllers/
-│   │   └── auth.controller.js  # HTTP request/response handlers
+│   │   ├── auth.controller.js  # Authentication HTTP handlers
+│   │   └── healthRecord.controller.js
 │   ├── middleware/
 │   │   ├── auth.middleware.js  # JWT verification (requireAuth)
 │   │   └── error.middleware.js # Centralized error & 404 handler
 │   ├── models/
-│   │   └── User.js             # User Mongoose schema with bcrypt hashing
+│   │   ├── User.js             # User Mongoose schema with bcrypt hashing
+│   │   └── HealthRecord.js     # User-referenced health measurements
 │   ├── routes/
-│   │   ├── auth.routes.js      # Auth endpoints (/api/auth)
-│   │   └── test.routes.js      # Protected test endpoint (/api/test)
+│   │   ├── auth.routes.js
+│   │   ├── healthRecord.routes.js
+│   │   └── test.routes.js
 │   ├── services/
-│   │   └── auth.service.js     # Business logic & DB transactions
+│   │   ├── auth.service.js
+│   │   └── healthRecord.service.js
 │   ├── utils/
 │   │   └── jwt.js              # Token signing & verification
 │   ├── app.js                  # Express application setup
 │   └── server.js               # Application entry point
 ├── tests/
-│   └── auth.test.js            # Automated test suite (11 scenarios)
+│   ├── auth.test.js
+│   └── healthRecord.test.js
 ├── .env.example                # Sample environment variables
 ├── .gitignore                  # Git ignore rules
 ├── package.json                # Project dependencies and scripts
@@ -158,6 +163,13 @@ The server will start listening at `http://localhost:5000`.
 | `GET` | `/api/auth/me` | Protected | Get authenticated user profile |
 | `POST` | `/api/auth/logout` | Public | Invalidate client session / token |
 | `GET` | `/api/test/protected` | Protected | Verification route for authorization |
+| `POST` | `/api/health-records` | Protected | Create a health record for the authenticated user |
+| `GET` | `/api/health-records` | Protected | List the authenticated user's records (`page`, `limit`) |
+| `GET` | `/api/health-records/:id` | Protected | Retrieve an owned health record |
+| `PATCH` | `/api/health-records/:id` | Protected | Update an owned health record |
+| `DELETE` | `/api/health-records/:id` | Protected | Delete an owned health record |
+
+Health-record requests use the authenticated user's ID as the owner; a `user` value in the request body is ignored. The `measurements` object accepts `systolicBP`, `diastolicBP`, `heartRateBpm`, `temperatureC`, `oxygenSaturationPercent`, `weightKg`, and `heightCm`. At least one measurement is required. Optional fields are `recordedAt` and `notes`. List requests accept `page` (default `1`) and `limit` (default `20`, maximum `100`).
 
 ---
 
@@ -285,7 +297,7 @@ POST /api/auth/logout
 
 ## 10. Testing Instructions
 
-The repository includes a comprehensive automated test suite verifying all 11 required scenarios:
+The repository includes automated authentication and health-record tests covering:
 1. Successful registration
 2. Duplicate registration (returns 409)
 3. Invalid registration data (returns 400)
@@ -297,6 +309,12 @@ The repository includes a comprehensive automated test suite verifying all 11 re
 9. `GET /api/auth/me` with invalid JWT (returns 401)
 10. Protected test route validation (`/api/test/protected`)
 11. Logout response confirmation
+12. Authentication requirement for health records
+13. Per-user health-record isolation and owner assignment
+14. Health-record CRUD and cross-user access denial
+15. Pagination and update validation
+16. Mongoose measurement and blood-pressure relationship validation
+17. Owner/date compound index
 
 Run the tests with:
 ```bash
@@ -307,7 +325,6 @@ npm test
 
 ## 11. Planned Work (Subsequent Phases)
 
-- **REST API Development** (18/10/2026 – 31/10/2026): Health record schemas, CRUD endpoints.
 - **AI Prediction API Integration** (01/11/2026 – 30/11/2026): Connect ML/DL models with backend.
 - **Health Monitoring Module** (01/12/2026 – 20/12/2026): Health monitoring services and risk-score tracking.
 - **Health-Risk Alert System** (21/12/2026 – 02/01/2027): Anomaly threshold detection and notifications.
