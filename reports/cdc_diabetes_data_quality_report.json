@@ -1,0 +1,299 @@
+{
+  "dataset_shape": {
+    "rows": 253680,
+    "columns": 22
+  },
+  "missing_values": {
+    "total": 0,
+    "by_column": {
+      "Diabetes_binary": 0,
+      "HighBP": 0,
+      "HighChol": 0,
+      "CholCheck": 0,
+      "BMI": 0,
+      "Smoker": 0,
+      "Stroke": 0,
+      "HeartDiseaseorAttack": 0,
+      "PhysActivity": 0,
+      "Fruits": 0,
+      "Veggies": 0,
+      "HvyAlcoholConsump": 0,
+      "AnyHealthcare": 0,
+      "NoDocbcCost": 0,
+      "GenHlth": 0,
+      "MentHlth": 0,
+      "PhysHlth": 0,
+      "DiffWalk": 0,
+      "Sex": 0,
+      "Age": 0,
+      "Education": 0,
+      "Income": 0
+    }
+  },
+  "invalid_values": {
+    "Diabetes_binary": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "HighBP": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "HighChol": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "CholCheck": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "BMI": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 12.0,
+      "max": 98.0,
+      "expected_min": 12.0,
+      "expected_max": 100.0
+    },
+    "Smoker": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "Stroke": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "HeartDiseaseorAttack": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "PhysActivity": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "Fruits": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "Veggies": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "HvyAlcoholConsump": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "AnyHealthcare": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "NoDocbcCost": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "GenHlth": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 1.0,
+      "max": 5.0,
+      "expected_min": 1.0,
+      "expected_max": 5.0
+    },
+    "MentHlth": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 30.0,
+      "expected_min": 0.0,
+      "expected_max": 30.0
+    },
+    "PhysHlth": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 30.0,
+      "expected_min": 0.0,
+      "expected_max": 30.0
+    },
+    "DiffWalk": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "Sex": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 0.0,
+      "max": 1.0,
+      "expected_min": 0.0,
+      "expected_max": 1.0
+    },
+    "Age": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 1.0,
+      "max": 13.0,
+      "expected_min": 1.0,
+      "expected_max": 13.0
+    },
+    "Education": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 1.0,
+      "max": 6.0,
+      "expected_min": 1.0,
+      "expected_max": 6.0
+    },
+    "Income": {
+      "out_of_range": 0,
+      "non_integer": 0,
+      "min": 1.0,
+      "max": 8.0,
+      "expected_min": 1.0,
+      "expected_max": 8.0
+    }
+  },
+  "suspicious_values": {
+    "bmi_under_15": 68,
+    "bmi_under_15_pct": 0.0268,
+    "bmi_over_60": 805,
+    "bmi_over_60_pct": 0.3173,
+    "bmi_over_70": 584,
+    "bmi_over_70_pct": 0.2302,
+    "bmi_max": 98.0,
+    "bmi_min": 12.0
+  },
+  "identifier_columns": {
+    "found": [],
+    "status": "None present (survey contains only anonymous binned/discrete features)"
+  },
+  "target_leakage_risks": {
+    "high_risk_features": [],
+    "feature_correlations_with_target": {
+      "HighBP": 0.2631,
+      "HighChol": 0.2003,
+      "CholCheck": 0.0648,
+      "BMI": 0.2168,
+      "Smoker": 0.0608,
+      "Stroke": 0.1058,
+      "HeartDiseaseorAttack": 0.1773,
+      "PhysActivity": -0.1181,
+      "Fruits": -0.0408,
+      "Veggies": -0.0566,
+      "HvyAlcoholConsump": -0.0571,
+      "AnyHealthcare": 0.0163,
+      "NoDocbcCost": 0.0314,
+      "GenHlth": 0.2936,
+      "MentHlth": 0.0693,
+      "PhysHlth": 0.1713,
+      "DiffWalk": 0.2183,
+      "Sex": 0.0314,
+      "Age": 0.1774,
+      "Education": -0.1245,
+      "Income": -0.1639
+    },
+    "status": "No direct target leakage detected (all features reflect general health/lifestyle/demographics measured prior to or comorbid with diagnosis)"
+  },
+  "duplicate_rows": {
+    "exact_duplicate_rows": 24206,
+    "exact_duplicate_pct": 9.54,
+    "feature_duplicates": 25772,
+    "unique_profiles": 227908,
+    "conflicting_profiles": 1566
+  },
+  "class_imbalance": {
+    "counts": {
+      "0": 218334,
+      "1": 35346
+    },
+    "percentages": {
+      "0": 86.07,
+      "1": 13.93
+    },
+    "ratio": 6.18
+  },
+  "feature_types": {
+    "binary_features": [
+      "HighBP",
+      "HighChol",
+      "CholCheck",
+      "Smoker",
+      "Stroke",
+      "HeartDiseaseorAttack",
+      "PhysActivity",
+      "Fruits",
+      "Veggies",
+      "HvyAlcoholConsump",
+      "AnyHealthcare",
+      "NoDocbcCost",
+      "DiffWalk",
+      "Sex"
+    ],
+    "ordinal_features": [
+      "GenHlth",
+      "Age",
+      "Education",
+      "Income"
+    ],
+    "continuous_numerical_features": [
+      "BMI",
+      "MentHlth",
+      "PhysHlth"
+    ]
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "dataset_shape": {
+    "rows": 920,
+    "columns": 15
+  },
+  "column_names": [
+    "source",
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal",
+    "num"
+  ],
+  "data_types": {
+    "source": "object",
+    "age": "float64",
+    "sex": "float64",
+    "cp": "float64",
+    "trestbps": "float64",
+    "chol": "float64",
+    "fbs": "float64",
+    "restecg": "float64",
+    "thalach": "float64",
+    "exang": "float64",
+    "oldpeak": "float64",
+    "slope": "float64",
+    "ca": "float64",
+    "thal": "float64",
+    "num": "int64"
+  },
+  "target": {
+    "column": "num",
+    "values": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "class_counts": {
+      "0": 411,
+      "1": 265,
+      "2": 109,
+      "3": 107,
+      "4": 28
+    },
+    "class_percentages": {
+      "0": 44.67,
+      "1": 28.8,
+      "2": 11.85,
+      "3": 11.63,
+      "4": 3.04
+    }
+  },
+  "missing_values": {
+    "total": 1759,
+    "by_column": {
+      "source": 0,
+      "age": 0,
+      "sex": 0,
+      "cp": 0,
+      "trestbps": 59,
+      "chol": 30,
+      "fbs": 90,
+      "restecg": 2,
+      "thalach": 55,
+      "exang": 55,
+      "oldpeak": 62,
+      "slope": 309,
+      "ca": 611,
+      "thal": 486,
+      "num": 0
+    }
+  },
+  "duplicate_rows": {
+    "exact_duplicate_rows": 2,
+    "exact_duplicate_rows_excluding_source": 2
+  },
+  "source_distribution": {
+    "cleveland": 303,
+    "hungarian": 294,
+    "switzerland": 123,
+    "va": 200
+  },
+  "basic_statistics": {
+    "age": {
+      "count": 920.0,
+      "mean": 53.511,
+      "std": 9.425,
+      "min": 28.0,
+      "25%": 47.0,
+      "50%": 54.0,
+      "75%": 60.0,
+      "max": 77.0
+    },
+    "sex": {
+      "count": 920.0,
+      "mean": 0.789,
+      "std": 0.408,
+      "min": 0.0,
+      "25%": 1.0,
+      "50%": 1.0,
+      "75%": 1.0,
+      "max": 1.0
+    },
+    "cp": {
+      "count": 920.0,
+      "mean": 3.25,
+      "std": 0.931,
+      "min": 1.0,
+      "25%": 3.0,
+      "50%": 4.0,
+      "75%": 4.0,
+      "max": 4.0
+    },
+    "trestbps": {
+      "count": 861.0,
+      "mean": 132.132,
+      "std": 19.066,
+      "min": 0.0,
+      "25%": 120.0,
+      "50%": 130.0,
+      "75%": 140.0,
+      "max": 200.0
+    },
+    "chol": {
+      "count": 890.0,
+      "mean": 199.13,
+      "std": 110.781,
+      "min": 0.0,
+      "25%": 175.0,
+      "50%": 223.0,
+      "75%": 268.0,
+      "max": 603.0
+    },
+    "fbs": {
+      "count": 830.0,
+      "mean": 0.166,
+      "std": 0.373,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 0.0,
+      "max": 1.0
+    },
+    "restecg": {
+      "count": 918.0,
+      "mean": 0.605,
+      "std": 0.806,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 1.0,
+      "max": 2.0
+    },
+    "thalach": {
+      "count": 865.0,
+      "mean": 137.546,
+      "std": 25.926,
+      "min": 60.0,
+      "25%": 120.0,
+      "50%": 140.0,
+      "75%": 157.0,
+      "max": 202.0
+    },
+    "exang": {
+      "count": 865.0,
+      "mean": 0.39,
+      "std": 0.488,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 1.0,
+      "max": 1.0
+    },
+    "oldpeak": {
+      "count": 858.0,
+      "mean": 0.879,
+      "std": 1.091,
+      "min": -2.6,
+      "25%": 0.0,
+      "50%": 0.5,
+      "75%": 1.5,
+      "max": 6.2
+    },
+    "slope": {
+      "count": 611.0,
+      "mean": 1.771,
+      "std": 0.619,
+      "min": 1.0,
+      "25%": 1.0,
+      "50%": 2.0,
+      "75%": 2.0,
+      "max": 3.0
+    },
+    "ca": {
+      "count": 309.0,
+      "mean": 0.676,
+      "std": 0.936,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 1.0,
+      "max": 3.0
+    },
+    "thal": {
+      "count": 434.0,
+      "mean": 5.088,
+      "std": 1.919,
+      "min": 3.0,
+      "25%": 3.0,
+      "50%": 6.0,
+      "75%": 7.0,
+      "max": 7.0
+    },
+    "num": {
+      "count": 920.0,
+      "mean": 0.996,
+      "std": 1.143,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 1.0,
+      "75%": 2.0,
+      "max": 4.0
+    }
+  },
+  "zero_measurement_counts": {
+    "trestbps": 1,
+    "chol": 172,
+    "thalach": 0,
+    "oldpeak": 370
+  },
+  "feature_groups": {
+    "numeric_features": [
+      "age",
+      "trestbps",
+      "chol",
+      "thalach",
+      "oldpeak"
+    ],
+    "categorical_features": [
+      "sex",
+      "cp",
+      "fbs",
+      "restecg",
+      "exang",
+      "slope",
+      "ca",
+      "thal"
+    ]
+  }
+}
