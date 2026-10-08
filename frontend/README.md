@@ -1,16 +1,50 @@
-# React + Vite
+# PulseRisk AI - Frontend Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This is the frontend application for the **AI Powered Health Risk Prediction and Monitoring System** (Project ID: SKIT/DS/2023-2027/01). It is built with React, Vite, and a modern CSS design system featuring a dark clinical theme with glassmorphism.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Health Monitoring Dashboard:** Real-time visualization of health parameters.
+- **AI Prediction Interface:** Displays risk scores and explainable AI insights for Cardiovascular Disease, Diabetes, and Hypertension.
+- **Vitals Telemetry:** Interactive charts and sparklines for heart rate, SpO2, blood pressure, etc.
+- **Health Records:** Secure viewing, searching, and filtering of patient health records.
+- **Responsive UI:** Fully responsive design tailored for various screen sizes.
 
-## React Compiler
+## 🛠️ Technology Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework:** React 18
+- **Build Tool:** Vite
+- **Styling:** Custom Vanilla CSS (CSS Variables, Flexbox/Grid, Glassmorphism)
+- **Icons:** Custom SVGs
+- **State Management:** React Hooks (`useState`, `useEffect`)
+- **API Integration:** Service Layer ready for backend REST APIs
 
-## Expanding the Oxlint configuration
+## 📦 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm
+
+### Installation
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open your browser and visit `http://localhost:5173`.
+
+## 📂 Project Structure
+- `/src/components/`: Reusable UI components (Header, Sidebar, Modals, Views).
+- `/src/services/`: API service layer for backend communication.
+- `/src/App.css` & `/src/index.css`: Global design system and layout styles.
+
+## 👨‍💻 Developed By
+**Gaurav Biloniya** (Frontend Developer - React Dashboard, Visualization & API integration)
+Team: SKIT DS 2023-2027 (DS-01)
