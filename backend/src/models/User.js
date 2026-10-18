@@ -27,6 +27,39 @@ const userSchema = new mongoose.Schema(
       minlength: [6, 'Password must be at least 6 characters long'],
       select: false,
     },
+    age: {
+      type: Number,
+      min: [0, 'Age cannot be negative'],
+      max: [130, 'Age exceeds maximum valid range'],
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female', 'other', 'prefer_not_to_say'],
+        message: '{VALUE} is not a valid gender option',
+      },
+    },
+    bloodGroup: {
+      type: String,
+      enum: {
+        values: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+        message: '{VALUE} is not a recognized blood group',
+      },
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    heightCm: {
+      type: Number,
+      min: [30, 'Height must be at least 30 cm'],
+      max: [275, 'Height cannot exceed 275 cm'],
+    },
+    weightKg: {
+      type: Number,
+      min: [1, 'Weight must be at least 1 kg'],
+      max: [500, 'Weight cannot exceed 500 kg'],
+    },
   },
   {
     timestamps: true,
