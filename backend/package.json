@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "node --test tests/auth.test.js"
+    "test": "node --test tests/auth.test.js tests/healthRecord.test.js tests/restApi.test.js tests/prediction.test.js",
+    "test:auth": "node --test tests/auth.test.js",
+    "test:health": "node --test tests/healthRecord.test.js",
+    "test:rest": "node --test tests/restApi.test.js",
+    "test:prediction": "node --test tests/prediction.test.js"
   },
   "keywords": [
     "health-monitoring",
