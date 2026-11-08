@@ -7,11 +7,11 @@ Backend service providing RESTful architecture, MongoDB connectivity, and JWT-ba
 ## 1. Project Overview & Current Phase
 
 - **Project ID**: SKIT/DS/2023-2027/01
-- **Current Development Phase**: Backend Architecture + Authentication & Authorization (Phase 1)
-- **Status**: Implemented & Verified
-- **Assigned Lead**: Abhinav Kumar Chaudhary (Backend & API Architecture)
+- **Current Development Phase**: Backend Architecture, Authentication, REST APIs & AI Prediction API Integration (Sprint 3 & Sprint 4: Active as of 13/11/2026)
+- **Status**: Implemented & Fully Verified (40 Automated Tests Passing across 4 Suites)
+- **Assigned Lead**: Abhinav Kumar Chaudhary (Team Lead - Backend & API Architecture)
 
-*Note: Future components (Health Records CRUD, AI Prediction Services, Health Monitoring, Alert Systems) belong to subsequent project phases and are not yet implemented.*
+*Note: Health Monitoring Module & Risk-Score tracking and Alert systems belong to subsequent project phases (December 2026 onwards).*
 
 ---
 
@@ -34,29 +34,45 @@ The backend follows a clean, modular layer separation:
 backend/
 ├── src/
 │   ├── config/
-│   │   └── db.js               # MongoDB Mongoose connection
+│   │   └── db.js                    # MongoDB Mongoose connection
 │   ├── controllers/
-│   │   └── auth.controller.js  # HTTP request/response handlers
+│   │   ├── auth.controller.js       # Authentication route handlers
+│   │   ├── user.controller.js       # User profile & account handlers
+│   │   ├── healthRecord.controller.js # Health record CRUD & analytics handlers
+│   │   └── prediction.controller.js # AI risk prediction & history handlers
 │   ├── middleware/
-│   │   ├── auth.middleware.js  # JWT verification (requireAuth)
-│   │   └── error.middleware.js # Centralized error & 404 handler
+│   │   ├── auth.middleware.js       # JWT verification (requireAuth)
+│   │   └── error.middleware.js      # Centralized error & 404 handler
+│   ├── ml/
+│   │   └── inference_bridge.py      # Python subprocess bridge to trained models
 │   ├── models/
-│   │   └── User.js             # User Mongoose schema with bcrypt hashing
+│   │   ├── User.js                  # User schema with profile fields & bcrypt
+│   │   ├── HealthRecord.js          # Health vitals schema with BP validation
+│   │   └── Prediction.js            # AI prediction persistence schema
 │   ├── routes/
-│   │   ├── auth.routes.js      # Auth endpoints (/api/auth)
-│   │   └── test.routes.js      # Protected test endpoint (/api/test)
+│   │   ├── auth.routes.js           # Auth endpoints (/api/auth)
+│   │   ├── test.routes.js           # Protected test endpoint (/api/test)
+│   │   ├── user.routes.js           # User profile endpoints (/api/users)
+│   │   ├── healthRecord.routes.js   # Health data endpoints (/api/health-records)
+│   │   └── prediction.routes.js     # AI prediction endpoints (/api/predictions)
 │   ├── services/
-│   │   └── auth.service.js     # Business logic & DB transactions
+│   │   ├── auth.service.js          # Authentication business logic & DB transactions
+│   │   ├── user.service.js          # User profile & password management logic
+│   │   ├── healthRecord.service.js  # Health record CRUD & vitals analytics logic
+│   │   └── prediction.service.js    # ML inference bridge execution & DB persistence
 │   ├── utils/
-│   │   └── jwt.js              # Token signing & verification
-│   ├── app.js                  # Express application setup
-│   └── server.js               # Application entry point
+│   │   └── jwt.js                   # Token signing & verification
+│   ├── app.js                       # Express application setup
+│   └── server.js                    # Application entry point
 ├── tests/
-│   └── auth.test.js            # Automated test suite (11 scenarios)
-├── .env.example                # Sample environment variables
-├── .gitignore                  # Git ignore rules
-├── package.json                # Project dependencies and scripts
-└── README.md                   # Backend documentation
+│   ├── auth.test.js                 # Authentication automated tests (11 scenarios)
+│   ├── healthRecord.test.js         # Health record isolation tests (6 scenarios)
+│   ├── restApi.test.js              # User & Health REST API tests (14 scenarios)
+│   └── prediction.test.js           # AI prediction & inference tests (9 scenarios)
+├── .env.example                     # Sample environment variables
+├── .gitignore                       # Git ignore rules
+├── package.json                     # Project dependencies and scripts
+└── README.md                        # Backend documentation
 ```
 
 ### Flow Pattern
@@ -158,6 +174,21 @@ The server will start listening at `http://localhost:5000`.
 | `GET` | `/api/auth/me` | Protected | Get authenticated user profile |
 | `POST` | `/api/auth/logout` | Public | Invalidate client session / token |
 | `GET` | `/api/test/protected` | Protected | Verification route for authorization |
+| `GET` | `/api/users/profile` | Protected | Retrieve full user profile & vitals metrics |
+| `PATCH` | `/api/users/profile` | Protected | Update user profile attributes (age, phone, weight, etc.) |
+| `PUT` | `/api/users/change-password` | Protected | Change password with verification |
+| `DELETE` | `/api/users/profile` | Protected | Delete account & cascade delete health records |
+| `POST` | `/api/health-records` | Protected | Create user health vitals record |
+| `GET` | `/api/health-records` | Protected | List user health records (pagination, filtering) |
+| `GET` | `/api/health-records/summary` | Protected | Get vitals aggregate analytics & latest record |
+| `GET` | `/api/health-records/:id` | Protected | Get single health record by ID |
+| `PATCH` | `/api/health-records/:id` | Protected | Update health record measurements/notes |
+| `DELETE` | `/api/health-records/:id` | Protected | Delete health record by ID |
+| `POST` | `/api/predictions/diabetes` | Protected | Run live AI diabetes risk inference & persist result |
+| `POST` | `/api/predictions/heart` | Protected | Run live AI heart disease risk inference & persist result |
+| `GET` | `/api/predictions` | Protected | List user prediction history (pagination, type filter) |
+| `GET` | `/api/predictions/:id` | Protected | Retrieve specific prediction record by ID |
+| `DELETE` | `/api/predictions/:id` | Protected | Delete specific prediction record by ID |
 
 ---
 
@@ -285,30 +316,33 @@ POST /api/auth/logout
 
 ## 10. Testing Instructions
 
-The repository includes a comprehensive automated test suite verifying all 11 required scenarios:
-1. Successful registration
-2. Duplicate registration (returns 409)
-3. Invalid registration data (returns 400)
-4. Successful login
-5. Incorrect password rejection (returns 401)
-6. Non-existent user rejection (returns 401)
-7. `GET /api/auth/me` with valid JWT
-8. `GET /api/auth/me` without JWT (returns 401)
-9. `GET /api/auth/me` with invalid JWT (returns 401)
-10. Protected test route validation (`/api/test/protected`)
-11. Logout response confirmation
+The repository includes a comprehensive automated test suite verifying all 40 required scenarios across 4 test suites:
+- **Authentication & Authorization Suite** (`tests/auth.test.js` - 11 tests)
+- **Health Record Isolation & Schema Suite** (`tests/healthRecord.test.js` - 6 tests)
+- **REST API Suite for User & Health Data** (`tests/restApi.test.js` - 14 tests)
+- **AI Prediction API & Inference Suite** (`tests/prediction.test.js` - 9 tests)
 
-Run the tests with:
+Run the full test suite with:
 ```bash
 npm test
 ```
 
+Or run targeted test suites:
+```bash
+npm run test:auth
+npm run test:health
+npm run test:rest
+npm run test:prediction
+```
+
 ---
 
-## 11. Planned Work (Subsequent Phases)
+## 11. Sprint Status & Subsequent Phases
 
-- **REST API Development** (18/10/2026 – 31/10/2026): Health record schemas, CRUD endpoints.
-- **AI Prediction API Integration** (01/11/2026 – 30/11/2026): Connect ML/DL models with backend.
-- **Health Monitoring Module** (01/12/2026 – 20/12/2026): Health monitoring services and risk-score tracking.
-- **Health-Risk Alert System** (21/12/2026 – 02/01/2027): Anomaly threshold detection and notifications.
-- **Testing & Deployment** (07/02/2027 – 06/03/2027): End-to-end integration and Docker deployment.
+- [x] **Backend Architecture & Express Setup** (11/08/2026 – 10/09/2026) - **Completed**
+- [x] **Authentication & JWT Authorization** (11/09/2026 – 17/10/2026) - **Completed**
+- [x] **Develop REST API (User & Health Data)** (18/10/2026 – 31/10/2026) - **Completed**
+- [x] **AI Prediction API Integration** (01/11/2026 – 30/11/2026) - **Completed & Verified (as of 13/11/2026)**
+- [ ] **Health Monitoring Module & Risk-Score Services** (01/12/2026 – 20/12/2026) - **Upcoming**
+- [ ] **Health-Risk Alert System** (21/12/2026 – 02/01/2027) - **Upcoming**
+- [ ] **Testing & Deployment** (07/02/2027 – 06/03/2027) - **Upcoming**
