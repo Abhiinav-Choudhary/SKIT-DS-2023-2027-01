@@ -42,6 +42,14 @@ INPUT_FEATURE_COLUMNS: List[str] = [
     column for column in HEART_DISEASE_COLUMNS if column != HEART_DISEASE_TARGET
 ]
 
+NUMERIC_FEATURE_VALUE_RANGES = {
+    "age": (1, 120),
+    "trestbps": (40, 350),
+    "chol": (40, 1000),
+    "thalach": (30, 260),
+    "oldpeak": (-10.0, 15.0),
+}
+
 
 def get_pipeline_path() -> Path:
     return HEART_MODEL_DIR / PIPELINE_FILENAME
@@ -226,8 +234,15 @@ def _validate_inference_features(X: pd.DataFrame, pipeline: Pipeline) -> pd.Data
             invalid_values = numeric_X.loc[invalid_mask, column].tolist()
             categorical_errors.append(f"{column}={invalid_values} not in {allowed_values}")
 
-    if zero_measurement_errors or categorical_errors:
-        errors = zero_measurement_errors + categorical_errors
+    range_errors = []
+    for column, (minimum, maximum) in NUMERIC_FEATURE_VALUE_RANGES.items():
+        invalid_mask = ~numeric_X[column].between(minimum, maximum, inclusive="both")
+        if invalid_mask.any():
+            invalid_values = numeric_X.loc[invalid_mask, column].tolist()
+            range_errors.append(f"{column}={invalid_values} outside [{minimum}, {maximum}]")
+
+    if zero_measurement_errors or categorical_errors or range_errors:
+        errors = zero_measurement_errors + categorical_errors + range_errors
         raise ValueError("Invalid input values: " + "; ".join(errors))
 
     return numeric_X
