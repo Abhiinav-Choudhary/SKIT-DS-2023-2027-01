@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const testRoutes = require('./routes/test.routes');
+const userRoutes = require('./routes/user.routes');
 const healthRecordRoutes = require('./routes/healthRecord.routes');
+const predictionRoutes = require('./routes/prediction.routes');
 const { errorHandler, notFoundHandler } = require('./middleware/error.middleware');
 
 const app = express();
@@ -23,7 +25,9 @@ app.get('/', (req, res) => {
 // Mount modular API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/test', testRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/health-records', healthRecordRoutes);
+app.use('/api/predictions', predictionRoutes);
 
 // 404 Catch-all route handler
 app.use(notFoundHandler);

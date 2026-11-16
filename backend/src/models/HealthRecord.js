@@ -9,6 +9,7 @@ const measurementsSchema = new mongoose.Schema(
     oxygenSaturationPercent: { type: Number, min: 0, max: 100 },
     weightKg: { type: Number, min: 0.1, max: 700 },
     heightCm: { type: Number, min: 30, max: 275 },
+    bloodGlucoseMgDl: { type: Number, min: 20, max: 1000 },
   },
   { _id: false }
 );
@@ -28,7 +29,8 @@ const healthRecordSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: [true, 'User ID is required'],
+      index: true,
     },
     recordedAt: {
       type: Date,
@@ -37,10 +39,12 @@ const healthRecordSchema = new mongoose.Schema(
     },
     measurements: {
       type: measurementsSchema,
-      required: true,
+      required: [true, 'Measurements object is required'],
       validate: {
         validator(value) {
-          return value && Object.values(value.toObject()).some((item) => item != null);
+          if (!value) return false;
+          const obj = value.toObject ? value.toObject() : value;
+          return Object.values(obj).some((item) => item != null);
         },
         message: 'At least one health measurement is required',
       },

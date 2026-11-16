@@ -4,8 +4,19 @@ const { requireAuth } = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
+// Require JWT authentication for all health record operations
 router.use(requireAuth);
-router.route('/').get(healthRecordController.list).post(healthRecordController.create);
+
+// Collection routes
+router
+  .route('/')
+  .post(healthRecordController.create)
+  .get(healthRecordController.list);
+
+// Analytics & vitals summary
+router.get('/summary', healthRecordController.getSummary);
+
+// Single record item routes
 router
   .route('/:id')
   .get(healthRecordController.getById)

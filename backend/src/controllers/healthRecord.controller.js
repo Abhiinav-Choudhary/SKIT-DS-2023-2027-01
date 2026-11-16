@@ -15,11 +15,7 @@ const create = async (req, res, next) => {
 
 const list = async (req, res, next) => {
   try {
-    const result = await healthRecordService.listHealthRecords(
-      req.user._id,
-      req.query.page,
-      req.query.limit
-    );
+    const result = await healthRecordService.listHealthRecords(req.user._id, req.query);
     res.status(200).json({
       success: true,
       message: 'Health records retrieved successfully',
@@ -30,6 +26,18 @@ const list = async (req, res, next) => {
   }
 };
 
+const getSummary = async (req, res, next) => {
+  try {
+    const summary = await healthRecordService.getHealthSummary(req.user._id);
+    res.status(200).json({
+      success: true,
+      message: 'Health summary retrieved successfully',
+      data: summary,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const getById = async (req, res, next) => {
   try {
     const record = await healthRecordService.getHealthRecord(req.user._id, req.params.id);
@@ -66,11 +74,18 @@ const remove = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Health record deleted successfully',
-      data: { id: record._id },
+      data: { id: record.id || record._id },
     });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { create, list, getById, update, remove };
+module.exports = {
+  create,
+  list,
+  getSummary,
+  getById,
+  update,
+  remove,
+};
