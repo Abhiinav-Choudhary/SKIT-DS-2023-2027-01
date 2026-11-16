@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import {
-  calculateCardioRisk,
-  calculateDiabetesRisk,
-  calculateHypertensionStrokeRisk
-} from '../services/api';
+import { predictionService } from '../services/api';
 
 export default function PredictorView({ onSaveRecord }) {
   const [activeModel, setActiveModel] = useState('cardio');
   const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Form States - Cardio
@@ -128,41 +125,43 @@ export default function PredictorView({ onSaveRecord }) {
       });
     }
     setResult(null);
+    setError('');
     setSaveSuccess(false);
   };
 
-  // Run Prediction
-  const handleRunPrediction = () => {
+  // Run Prediction via unified Prediction Service (Backend API with Deterministic Fallback)
+  const handleRunPrediction = async () => {
     setIsCalculating(true);
+    setError('');
     setSaveSuccess(false);
 
-    // Simulate AI inference latency with micro-animation
-    setTimeout(() => {
-      let res;
-      if (activeModel === 'cardio') {
-        res = calculateCardioRisk(cardioData);
-      } else if (activeModel === 'diabetes') {
-        res = calculateDiabetesRisk(diabetesData);
-      } else {
-        res = calculateHypertensionStrokeRisk(hyperData);
-      }
+    try {
+      const currentParams = activeModel === 'cardio' ? cardioData : activeModel === 'diabetes' ? diabetesData : hyperData;
+      const res = await predictionService.predictRisk(activeModel, currentParams);
       setResult(res);
+    } catch (err) {
+      setError(err.message || 'Error running clinical prediction model.');
+    } finally {
       setIsCalculating(false);
-    }, 450);
+    }
   };
 
-  const handleSaveToRecords = () => {
+  const handleSaveToRecords = async () => {
     if (!result) return;
     const currentParams = activeModel === 'cardio' ? cardioData : activeModel === 'diabetes' ? diabetesData : hyperData;
-    onSaveRecord({
-      disease: result.disease,
-      riskScore: result.riskScore,
-      riskLevel: result.riskLevel,
-      model: result.modelName,
-      summary: result.recommendation,
-      parameters: currentParams
-    });
-    setSaveSuccess(true);
+    try {
+      await onSaveRecord({
+        disease: result.disease,
+        riskScore: result.riskScore,
+        riskLevel: result.riskLevel,
+        model: result.modelName,
+        summary: result.recommendation,
+        parameters: currentParams
+      });
+      setSaveSuccess(true);
+    } catch (err) {
+      setError(err.message || 'Failed to save record.');
+    }
   };
 
   return (
@@ -595,8 +594,24 @@ export default function PredictorView({ onSaveRecord }) {
         <div className="result-column glass-card">
           <div className="result-column-header">
             <h4>Diagnostic Assessment Result</h4>
-            {result && <span className="model-chip">{result.modelName}</span>}
+            {result && (
+              <div className="result-source-chips">
+                <span className="model-chip">{result.modelName}</span>
+                <span className={`badge ${result.source === 'backend-api' ? 'badge-backend' : 'badge-engine'}`}>
+                  {result.source === 'backend-api' ? '⚡ Live Backend AI' : '🔬 Clinical Engine'}
+                </span>
+              </div>
+            )}
           </div>
+
+          {error && (
+            <div className="auth-error mb-3" style={{ margin: '12px 16px' }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {error}
+            </div>
+          )}
 
           {!result ? (
             <div className="result-placeholder">

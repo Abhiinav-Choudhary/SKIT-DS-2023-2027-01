@@ -32,8 +32,9 @@ function getVitalStatus(key, value) {
   return { label: 'Borderline', cls: 'mod' };
 }
 
-export default function VitalsView() {
-  const [vitals, setVitals] = useState(() => vitalsService.getVitals());
+export default function VitalsView({ vitals: propVitals, onLogVital }) {
+  const [internalVitals, setInternalVitals] = useState(() => vitalsService.getLocalVitals());
+  const vitals = propVitals || internalVitals;
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     bpSys: 120, bpDia: 78, heartRate: 72, glucose: 95, spo2: 98, weight: 68.0, bmi: 22.2
@@ -42,10 +43,14 @@ export default function VitalsView() {
 
   const latest = vitals.length > 0 ? vitals[vitals.length - 1] : null;
 
-  const handleLogVital = (e) => {
+  const handleLogVital = async (e) => {
     e.preventDefault();
-    const saved = vitalsService.addVital(formData);
-    setVitals([...vitals, saved]);
+    if (onLogVital) {
+      await onLogVital(formData);
+    } else {
+      const saved = await vitalsService.addVital(formData);
+      setInternalVitals((prev) => [...prev, saved]);
+    }
     setFormMsg('✅ Vitals logged successfully!');
     setTimeout(() => { setFormMsg(''); setShowForm(false); }, 1800);
   };

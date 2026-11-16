@@ -18,7 +18,9 @@ export const setApiBaseUrl = (url) => {
   localStorage.setItem(STORAGE_KEYS.API_URL, url.replace(/\/$/, ''));
 };
 
-// Check backend connectivity
+// ==========================================
+// BACKEND CONNECTIVITY CHECK
+// ==========================================
 export const checkBackendHealth = async () => {
   const base = getApiBaseUrl().replace(/\/api$/, '');
   try {
@@ -27,15 +29,21 @@ export const checkBackendHealth = async () => {
     const res = await fetch(`${base}/`, { signal: controller.signal });
     clearTimeout(timeoutId);
     if (res.ok) {
-      return { online: true, message: 'Backend connected' };
+      const data = await res.json().catch(() => ({}));
+      return {
+        online: true,
+        message: data.message || 'Backend connected (REST API Active)'
+      };
     }
     return { online: false, message: `Server returned status ${res.status}` };
-  } catch (err) {
+  } catch {
     return { online: false, message: 'Backend offline (Running in local simulation mode)' };
   }
 };
 
-// Authentication Services
+// ==========================================
+// AUTHENTICATION SERVICES
+// ==========================================
 export const authService = {
   getToken() {
     return localStorage.getItem(STORAGE_KEYS.TOKEN);
@@ -63,10 +71,28 @@ export const authService = {
       if (!res.ok) {
         throw new Error(data.message || 'Registration failed');
       }
+
+      // Persist user
+      if (data.data?.user) {
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.data.user));
+      }
+
+      // If backend did not return a token upon registration, attempt login to acquire JWT
+      if (!data.data?.token) {
+        try {
+          const loginRes = await this.login(email, password);
+          return loginRes;
+        } catch {
+          // Keep registered user object
+        }
+      } else {
+        localStorage.setItem(STORAGE_KEYS.TOKEN, data.data.token);
+      }
+
       return data;
     } catch (err) {
-      // If server unreachable, provide mock registration for demo
-      if (err.message.includes('fetch') || err.name === 'TypeError') {
+      // If server unreachable, provide fallback simulation for demonstration
+      if (err.message?.includes('fetch') || err.name === 'TypeError') {
         const mockUser = {
           id: 'usr_' + Date.now().toString(36),
           name,
@@ -104,8 +130,8 @@ export const authService = {
       }
       return data;
     } catch (err) {
-      if (err.message.includes('fetch') || err.name === 'TypeError') {
-        // Fallback for mock login
+      if (err.message?.includes('fetch') || err.name === 'TypeError') {
+        // Fallback for offline demo login
         const mockUser = {
           id: 'usr_demo_01',
           name: email.split('@')[0] || 'Demo Patient',
@@ -145,19 +171,36 @@ export const authService = {
         return data.data.user;
       }
       return null;
-    } catch (err) {
+    } catch {
       // In offline mode return cached user
       return this.getCurrentUser();
     }
   },
 
-  logout() {
+  async logout() {
+    const token = this.getToken();
+    const base = getApiBaseUrl();
+    if (token) {
+      try {
+        await fetch(`${base}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+      } catch {
+        // Handled silently
+      }
+    }
     localStorage.removeItem(STORAGE_KEYS.TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
   }
 };
 
-// Initial Seed Data for Demo Vitals & Predictions
+// ==========================================
+// SEED DATA FOR DEMO / OFFLINE MODE
+// ==========================================
 const INITIAL_VITALS = [
   { id: 'v1', timestamp: '2026-10-02 08:30', bpSys: 118, bpDia: 76, heartRate: 72, glucose: 94, spo2: 99, weight: 68.5, bmi: 22.4 },
   { id: 'v2', timestamp: '2026-10-03 08:45', bpSys: 122, bpDia: 78, heartRate: 75, glucose: 98, spo2: 98, weight: 68.3, bmi: 22.3 },
@@ -201,9 +244,74 @@ const INITIAL_RECORDS = [
   }
 ];
 
-// Local Storage Handlers
+// ==========================================
+// PREDICTION API SERVICE
+// ==========================================
+export const predictionService = {
+  /**
+   * Run risk prediction by first contacting backend API if reachable,
+   * falling back to the clinical inference calculation engine.
+   *
+   * @param {'cardio' | 'diabetes' | 'hyper'} modelType
+   * @param {Object} inputData
+   * @returns {Promise<Object>}
+   */
+  async predictRisk(modelType, inputData) {
+    const base = getApiBaseUrl();
+    const token = authService.getToken();
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    };
+
+    // 1. Attempt connection with live backend API
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+      const res = await fetch(`${base}/predict/${modelType}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(inputData),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          return {
+            ...json.data,
+            source: 'backend-api' // Genuine live backend response
+          };
+        }
+      }
+    } catch {
+      // Backend not running, network offline, or route not implemented yet
+    }
+
+    // 2. Deterministic Clinical Inference Engine Fallback
+    let calculated;
+    if (modelType === 'cardio') {
+      calculated = calculateCardioRisk(inputData);
+    } else if (modelType === 'diabetes') {
+      calculated = calculateDiabetesRisk(inputData);
+    } else {
+      calculated = calculateHypertensionStrokeRisk(inputData);
+    }
+
+    return {
+      ...calculated,
+      source: 'clinical-engine' // Deterministic clinical inference
+    };
+  }
+};
+
+// ==========================================
+// HEALTH RECORDS API SERVICE
+// ==========================================
 export const recordService = {
-  getRecords() {
+  getLocalRecords() {
     const raw = localStorage.getItem(STORAGE_KEYS.RECORDS);
     if (!raw) {
       localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(INITIAL_RECORDS));
@@ -216,28 +324,100 @@ export const recordService = {
     }
   },
 
-  addRecord(record) {
-    const records = this.getRecords();
+  async getRecords() {
+    const base = getApiBaseUrl();
+    const token = authService.getToken();
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch(`${base}/records`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data && Array.isArray(json.data)) {
+          localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(json.data));
+          return json.data;
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
+
+    return this.getLocalRecords();
+  },
+
+  async addRecord(record) {
+    const base = getApiBaseUrl();
+    const token = authService.getToken();
     const newRecord = {
       ...record,
       id: 'rec_' + Date.now().toString(36),
       date: new Date().toISOString().split('T')[0]
     };
+
+    try {
+      const res = await fetch(`${base}/records`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(newRecord)
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        const saved = json.data?.record || newRecord;
+        const records = this.getLocalRecords();
+        records.unshift(saved);
+        localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records));
+        return saved;
+      }
+    } catch {
+      // Offline fallback
+    }
+
+    const records = this.getLocalRecords();
     records.unshift(newRecord);
     localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records));
     return newRecord;
   },
 
-  deleteRecord(id) {
-    let records = this.getRecords();
-    records = records.filter(r => r.id !== id);
+  async deleteRecord(id) {
+    const base = getApiBaseUrl();
+    const token = authService.getToken();
+
+    try {
+      await fetch(`${base}/records/${id}`, {
+        method: 'DELETE',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      });
+    } catch {
+      // Offline fallback
+    }
+
+    let records = this.getLocalRecords();
+    records = records.filter((r) => r.id !== id);
     localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records));
     return records;
   }
 };
 
+// ==========================================
+// BIOMETRIC VITALS API SERVICE
+// ==========================================
 export const vitalsService = {
-  getVitals() {
+  getLocalVitals() {
     const raw = localStorage.getItem(STORAGE_KEYS.VITALS);
     if (!raw) {
       localStorage.setItem(STORAGE_KEYS.VITALS, JSON.stringify(INITIAL_VITALS));
@@ -250,20 +430,83 @@ export const vitalsService = {
     }
   },
 
-  addVital(vital) {
-    const list = this.getVitals();
+  async getVitals() {
+    const base = getApiBaseUrl();
+    const token = authService.getToken();
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch(`${base}/vitals`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data && Array.isArray(json.data)) {
+          localStorage.setItem(STORAGE_KEYS.VITALS, JSON.stringify(json.data));
+          return json.data;
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
+
+    return this.getLocalVitals();
+  },
+
+  async addVital(vital) {
+    const base = getApiBaseUrl();
+    const token = authService.getToken();
     const newVital = {
       ...vital,
       id: 'v_' + Date.now().toString(36),
-      timestamp: new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toLocaleString([], {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
     };
+
+    try {
+      const res = await fetch(`${base}/vitals`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(newVital)
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        const saved = json.data?.vital || newVital;
+        const list = this.getLocalVitals();
+        list.push(saved);
+        localStorage.setItem(STORAGE_KEYS.VITALS, JSON.stringify(list));
+        return saved;
+      }
+    } catch {
+      // Offline fallback
+    }
+
+    const list = this.getLocalVitals();
     list.push(newVital);
     localStorage.setItem(STORAGE_KEYS.VITALS, JSON.stringify(list));
     return newVital;
   }
 };
 
-// Clinical AI Calculation Engine with Explainable Factors (XAI)
+// ==========================================
+// CLINICAL AI ENGINE (EXPLAINABLE AI)
+// ==========================================
 export const calculateCardioRisk = (data) => {
   const {
     age = 45,
@@ -274,23 +517,31 @@ export const calculateCardioRisk = (data) => {
     hdl = 50,
     smoker = false,
     diabetic = false,
-    activity = 'moderate' // low, moderate, high
+    activity = 'moderate'
   } = data;
 
-  // Base clinical coefficient algorithm
   let baseScore = 0;
   const factors = [];
 
   // Age factor
   const agePoints = Math.max(0, (age - 30) * 0.8);
   baseScore += agePoints;
-  factors.push({ name: 'Age (' + age + ' yrs)', impact: '+' + agePoints.toFixed(1) + '%', type: 'risk' });
+  factors.push({ name: `Age (${age} yrs)`, impact: `+${agePoints.toFixed(1)}%`, type: 'risk' });
+
+  // Sex / Gender demographic baseline factor
+  if (gender === 'male' && age >= 45) {
+    baseScore += 3.5;
+    factors.push({ name: 'Demographic Baseline (Male ≥ 45)', impact: '+3.5%', type: 'risk' });
+  } else if (gender === 'female' && age < 55) {
+    baseScore -= 2.0;
+    factors.push({ name: 'Premenopausal Protective Baseline', impact: '-2.0%', type: 'protective' });
+  }
 
   // Blood pressure factor
   if (bpSys >= 140 || bpDia >= 90) {
     const bpImpact = (bpSys - 120) * 0.4 + (bpDia - 80) * 0.3;
     baseScore += bpImpact;
-    factors.push({ name: 'Hypertension (' + bpSys + '/' + bpDia + ' mmHg)', impact: '+' + bpImpact.toFixed(1) + '%', type: 'risk' });
+    factors.push({ name: `Hypertension (${bpSys}/${bpDia} mmHg)`, impact: `+${bpImpact.toFixed(1)}%`, type: 'risk' });
   } else if (bpSys <= 118 && bpDia <= 78) {
     baseScore -= 3.5;
     factors.push({ name: 'Optimal Blood Pressure', impact: '-3.5%', type: 'protective' });
@@ -301,10 +552,10 @@ export const calculateCardioRisk = (data) => {
   if (ratio > 4.5) {
     const cholImpact = (ratio - 4.5) * 4.2;
     baseScore += cholImpact;
-    factors.push({ name: 'Elevated Chol/HDL (' + ratio.toFixed(1) + ')', impact: '+' + cholImpact.toFixed(1) + '%', type: 'risk' });
+    factors.push({ name: `Elevated Chol/HDL (${ratio.toFixed(1)})`, impact: `+${cholImpact.toFixed(1)}%`, type: 'risk' });
   } else if (hdl >= 60) {
     baseScore -= 4.0;
-    factors.push({ name: 'High HDL Good Cholesterol (' + hdl + ' mg/dL)', impact: '-4.0%', type: 'protective' });
+    factors.push({ name: `High HDL Good Cholesterol (${hdl} mg/dL)`, impact: '-4.0%', type: 'protective' });
   }
 
   // Smoking
@@ -328,7 +579,6 @@ export const calculateCardioRisk = (data) => {
     factors.push({ name: 'Sedentary Lifestyle', impact: '+5.5%', type: 'risk' });
   }
 
-  // Bound between 2% and 92%
   const riskScore = Math.min(94, Math.max(2.1, parseFloat(baseScore.toFixed(1))));
 
   let riskLevel = 'Low';
@@ -378,42 +628,42 @@ export const calculateDiabetesRisk = (data) => {
   if (age > 45) {
     const ageImpact = (age - 45) * 0.5 + 4;
     baseScore += ageImpact;
-    factors.push({ name: 'Age > 45 (' + age + ' yrs)', impact: '+' + ageImpact.toFixed(1) + '%', type: 'risk' });
+    factors.push({ name: `Age > 45 (${age} yrs)`, impact: `+${ageImpact.toFixed(1)}%`, type: 'risk' });
   }
 
   // BMI Factor
   if (bmi >= 30) {
     const bmiImpact = (bmi - 25) * 1.8;
     baseScore += bmiImpact;
-    factors.push({ name: 'Obesity Class BMI (' + bmi + ')', impact: '+' + bmiImpact.toFixed(1) + '%', type: 'risk' });
+    factors.push({ name: `Obesity Class BMI (${bmi})`, impact: `+${bmiImpact.toFixed(1)}%`, type: 'risk' });
   } else if (bmi >= 25) {
     const bmiImpact = (bmi - 24) * 1.2;
     baseScore += bmiImpact;
-    factors.push({ name: 'Overweight BMI (' + bmi + ')', impact: '+' + bmiImpact.toFixed(1) + '%', type: 'risk' });
+    factors.push({ name: `Overweight BMI (${bmi})`, impact: `+${bmiImpact.toFixed(1)}%`, type: 'risk' });
   } else {
     baseScore -= 3.0;
-    factors.push({ name: 'Optimal Body Mass Index (' + bmi + ')', impact: '-3.0%', type: 'protective' });
+    factors.push({ name: `Optimal Body Mass Index (${bmi})`, impact: '-3.0%', type: 'protective' });
   }
 
   // Fasting Blood Sugar (mg/dL)
   if (glucose >= 126) {
     baseScore += 28.0;
-    factors.push({ name: 'Diabetic Fasting Glucose (' + glucose + ' mg/dL)', impact: '+28.0%', type: 'risk' });
+    factors.push({ name: `Diabetic Fasting Glucose (${glucose} mg/dL)`, impact: '+28.0%', type: 'risk' });
   } else if (glucose >= 100) {
     baseScore += 14.5;
-    factors.push({ name: 'Pre-diabetic Impaired Glucose (' + glucose + ' mg/dL)', impact: '+14.5%', type: 'risk' });
+    factors.push({ name: `Pre-diabetic Impaired Glucose (${glucose} mg/dL)`, impact: '+14.5%', type: 'risk' });
   } else {
     baseScore -= 4.0;
-    factors.push({ name: 'Normal Fasting Glucose (' + glucose + ' mg/dL)', impact: '-4.0%', type: 'protective' });
+    factors.push({ name: `Normal Fasting Glucose (${glucose} mg/dL)`, impact: '-4.0%', type: 'protective' });
   }
 
   // HbA1c
   if (hba1c >= 6.5) {
     baseScore += 25.0;
-    factors.push({ name: 'Diagnostic HbA1c (' + hba1c + '%)', impact: '+25.0%', type: 'risk' });
+    factors.push({ name: `Diagnostic HbA1c (${hba1c}%)`, impact: '+25.0%', type: 'risk' });
   } else if (hba1c >= 5.7) {
     baseScore += 11.0;
-    factors.push({ name: 'Pre-diabetic Range HbA1c (' + hba1c + '%)', impact: '+11.0%', type: 'risk' });
+    factors.push({ name: `Pre-diabetic Range HbA1c (${hba1c}%)`, impact: '+11.0%', type: 'risk' });
   }
 
   // Genetics / Family History
@@ -422,10 +672,16 @@ export const calculateDiabetesRisk = (data) => {
     factors.push({ name: 'First-Degree Family Diabetes History', impact: '+12.0%', type: 'risk' });
   }
 
+  // Blood pressure co-morbidity
+  if (bpHigh) {
+    baseScore += 7.0;
+    factors.push({ name: 'Hypertensive Metabolic Risk', impact: '+7.0%', type: 'risk' });
+  }
+
   // Exercise
   if (dailyExerciseMin >= 30) {
     baseScore -= 7.5;
-    factors.push({ name: 'Daily Physical Exercise (' + dailyExerciseMin + 'm)', impact: '-7.5%', type: 'protective' });
+    factors.push({ name: `Daily Physical Exercise (${dailyExerciseMin}m)`, impact: '-7.5%', type: 'protective' });
   } else {
     baseScore += 6.0;
     factors.push({ name: 'Insufficient Physical Activity', impact: '+6.0%', type: 'risk' });
@@ -468,7 +724,7 @@ export const calculateHypertensionStrokeRisk = (data) => {
     bpDia = 82,
     heartRate = 72,
     sleepHours = 7,
-    stressLevel = 4 // 1 to 10
+    stressLevel = 4
   } = data;
 
   let baseScore = 5;
@@ -476,29 +732,38 @@ export const calculateHypertensionStrokeRisk = (data) => {
 
   if (bpSys >= 160 || bpDia >= 100) {
     baseScore += 45;
-    factors.push({ name: 'Stage 2 Severe Hypertension (' + bpSys + '/' + bpDia + ')', impact: '+45%', type: 'risk' });
+    factors.push({ name: `Stage 2 Severe Hypertension (${bpSys}/${bpDia})`, impact: '+45%', type: 'risk' });
   } else if (bpSys >= 130 || bpDia >= 80) {
     baseScore += 22;
-    factors.push({ name: 'Stage 1 Hypertension (' + bpSys + '/' + bpDia + ')', impact: '+22%', type: 'risk' });
+    factors.push({ name: `Stage 1 Hypertension (${bpSys}/${bpDia})`, impact: '+22%', type: 'risk' });
   } else if (bpSys >= 120 && bpSys < 130 && bpDia < 80) {
     baseScore += 8;
-    factors.push({ name: 'Elevated Systolic Pressure (' + bpSys + ' mmHg)', impact: '+8%', type: 'risk' });
+    factors.push({ name: `Elevated Systolic Pressure (${bpSys} mmHg)`, impact: '+8%', type: 'risk' });
   } else {
     baseScore -= 4;
-    factors.push({ name: 'Normotensive Profile (' + bpSys + '/' + bpDia + ')', impact: '-4%', type: 'protective' });
+    factors.push({ name: `Normotensive Profile (${bpSys}/${bpDia})`, impact: '-4%', type: 'protective' });
+  }
+
+  // Heart Rate / Autonomic marker
+  if (heartRate >= 85) {
+    baseScore += 8;
+    factors.push({ name: `Resting Tachycardia (${heartRate} bpm)`, impact: '+8%', type: 'risk' });
+  } else if (heartRate <= 60) {
+    baseScore -= 3;
+    factors.push({ name: `Optimal Resting Bradycardia (${heartRate} bpm)`, impact: '-3%', type: 'protective' });
   }
 
   if (stressLevel >= 8) {
     baseScore += 12;
-    factors.push({ name: 'High Chronic Stress Index (' + stressLevel + '/10)', impact: '+12%', type: 'risk' });
+    factors.push({ name: `High Chronic Stress Index (${stressLevel}/10)`, impact: '+12%', type: 'risk' });
   }
 
   if (sleepHours < 6) {
     baseScore += 10;
-    factors.push({ name: 'Sleep Deprivation (' + sleepHours + ' hrs/night)', impact: '+10%', type: 'risk' });
+    factors.push({ name: `Sleep Deprivation (${sleepHours} hrs/night)`, impact: '+10%', type: 'risk' });
   } else if (sleepHours >= 7 && sleepHours <= 8.5) {
     baseScore -= 5;
-    factors.push({ name: 'Optimal Sleep Quality (' + sleepHours + ' hrs)', impact: '-5%', type: 'protective' });
+    factors.push({ name: `Optimal Sleep Quality (${sleepHours} hrs)`, impact: '-5%', type: 'protective' });
   }
 
   const riskScore = Math.min(95, Math.max(3, parseFloat(baseScore.toFixed(1))));

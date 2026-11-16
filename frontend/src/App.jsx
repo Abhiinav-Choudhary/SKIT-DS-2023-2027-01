@@ -14,6 +14,7 @@ import SettingsModal from './components/SettingsModal'
 import {
   authService,
   recordService,
+  vitalsService,
   checkBackendHealth
 } from './services/api'
 
@@ -25,7 +26,11 @@ function App() {
   )
 
   const [records, setRecords] = useState(() =>
-    recordService.getRecords()
+    recordService.getLocalRecords()
+  )
+
+  const [vitals, setVitals] = useState(() =>
+    vitalsService.getLocalVitals()
   )
 
   const [showAuth, setShowAuth] = useState(false)
@@ -102,31 +107,37 @@ function App() {
   ]
 
   // =========================
-  // BACKEND HEALTH
+  // INITIAL API SYNCHRONIZATION
   // =========================
 
   useEffect(() => {
+    // 1. Verify backend connectivity
     checkBackendHealth().then(setBackendStatus)
-  }, [])
 
-  // =========================
-  // AUTO LOGIN
-  // =========================
+    // 2. Synchronize records from API / local fallback
+    recordService.getRecords().then((fetched) => {
+      if (fetched) setRecords(fetched)
+    })
 
-  useEffect(() => {
-    const user = authService.getCurrentUser()
+    // 3. Synchronize vitals from API / local fallback
+    vitalsService.getVitals().then((fetched) => {
+      if (fetched) setVitals(fetched)
+    })
 
-    if (user) {
-      setCurrentUser(user)
-    }
+    // 4. Verify user authentication session with backend
+    authService.fetchMe().then((user) => {
+      if (user) {
+        setCurrentUser(user)
+      }
+    })
   }, [])
 
   // =========================
   // LOGOUT
   // =========================
 
-  const handleLogout = () => {
-    authService.logout()
+  const handleLogout = async () => {
+    await authService.logout()
     setCurrentUser(null)
   }
 
@@ -134,11 +145,10 @@ function App() {
   // SAVE RECORD
   // =========================
 
-  const handleSaveRecord = (record) => {
-    const saved = recordService.addRecord(record)
-
-    setRecords(recordService.getRecords())
-
+  const handleSaveRecord = async (record) => {
+    const saved = await recordService.addRecord(record)
+    const updated = await recordService.getRecords()
+    setRecords(updated)
     return saved
   }
 
@@ -146,13 +156,25 @@ function App() {
   // DELETE RECORD
   // =========================
 
-  const handleDeleteRecord = (id) => {
-    recordService.deleteRecord(id)
-    setRecords(recordService.getRecords())
+  const handleDeleteRecord = async (id) => {
+    await recordService.deleteRecord(id)
+    const updated = await recordService.getRecords()
+    setRecords(updated)
 
     if (selectedRecord?.id === id) {
       setSelectedRecord(null)
     }
+  }
+
+  // =========================
+  // LOG VITAL
+  // =========================
+
+  const handleLogVital = async (vital) => {
+    const saved = await vitalsService.addVital(vital)
+    const updated = await vitalsService.getVitals()
+    setVitals(updated)
+    return saved
   }
 
   // =========================
@@ -205,7 +227,7 @@ function App() {
           {activeTab === 'dashboard' && (
             <DashboardView
               records={records}
-              vitals={[]}
+              vitals={vitals}
               onNavigateTab={setActiveTab}
               onSelectRecord={setSelectedRecord}
               currentUser={currentUser}
@@ -219,7 +241,10 @@ function App() {
           )}
 
           {activeTab === 'vitals' && (
-            <VitalsView />
+            <VitalsView
+              vitals={vitals}
+              onLogVital={handleLogVital}
+            />
           )}
 
           {activeTab === 'records' && (

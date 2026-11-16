@@ -1,13 +1,32 @@
 import React from 'react';
 
 export default function DashboardView({
-  records,
-  vitals,
+  records = [],
+  vitals = [],
   onNavigateTab,
   onSelectRecord,
   currentUser
 }) {
   const latestVital = vitals.length > 0 ? vitals[vitals.length - 1] : null;
+
+  const latestCardio = records.find(r => r.disease?.toLowerCase().includes('cardio'));
+  const latestDiabetes = records.find(r => r.disease?.toLowerCase().includes('diabetes'));
+  const latestHyper = records.find(r => r.disease?.toLowerCase().includes('hyper') || r.disease?.toLowerCase().includes('stroke'));
+
+  const cardioScore = latestCardio ? latestCardio.riskScore : 12.4;
+  const cardioLevel = latestCardio ? latestCardio.riskLevel : 'Low';
+  const diabetesScore = latestDiabetes ? latestDiabetes.riskScore : 28.5;
+  const diabetesLevel = latestDiabetes ? latestDiabetes.riskLevel : 'Moderate';
+  const hyperScore = latestHyper ? latestHyper.riskScore : 18.2;
+  const hyperLevel = latestHyper ? latestHyper.riskLevel : 'Low';
+
+  const getBadgeClass = (level) => {
+    const l = String(level || '').toLowerCase();
+    if (l.includes('critical') || l.includes('high')) return 'badge-critical';
+    if (l.includes('elevated')) return 'badge-high';
+    if (l.includes('mod')) return 'badge-mod';
+    return 'badge-low';
+  };
 
   return (
     <div className="dashboard-view fade-in">
@@ -48,8 +67,8 @@ export default function DashboardView({
             </span>
           </div>
           <div className="metric-value-row">
-            <div className="metric-value">12.4%</div>
-            <span className="badge badge-low">Low Risk</span>
+            <div className="metric-value">{cardioScore}%</div>
+            <span className={`badge ${getBadgeClass(cardioLevel)}`}>{cardioLevel}</span>
           </div>
           <div className="metric-footer">
             <span className="footer-trend pos">↓ 1.2%</span> from last month's baseline
@@ -69,8 +88,8 @@ export default function DashboardView({
             </span>
           </div>
           <div className="metric-value-row">
-            <div className="metric-value">28.5%</div>
-            <span className="badge badge-mod">Moderate</span>
+            <div className="metric-value">{diabetesScore}%</div>
+            <span className={`badge ${getBadgeClass(diabetesLevel)}`}>{diabetesLevel}</span>
           </div>
           <div className="metric-footer">
             <span className="footer-trend warn">↑ 2.1%</span> elevated fasting glucose
@@ -107,8 +126,8 @@ export default function DashboardView({
             </span>
           </div>
           <div className="metric-value-row">
-            <div className="metric-value">18.2%</div>
-            <span className="badge badge-low">Standard</span>
+            <div className="metric-value">{hyperScore}%</div>
+            <span className={`badge ${getBadgeClass(hyperLevel)}`}>{hyperLevel}</span>
           </div>
           <div className="metric-footer">
             <span className="footer-trend pos">Stable</span> resting pulse pressure
@@ -187,30 +206,30 @@ export default function DashboardView({
             <div className="dist-item">
               <div className="dist-meta">
                 <span className="dist-name">Cardiovascular Disease (CVD)</span>
-                <span className="dist-pct low">12.4% (Low)</span>
+                <span className={`dist-pct ${getBadgeClass(cardioLevel).replace('badge-', '')}`}>{cardioScore}% ({cardioLevel})</span>
               </div>
               <div className="progress-track">
-                <div className="progress-fill low" style={{ width: '12.4%' }}></div>
+                <div className={`progress-fill ${getBadgeClass(cardioLevel).replace('badge-', '')}`} style={{ width: `${Math.min(100, cardioScore)}%` }}></div>
               </div>
             </div>
 
             <div className="dist-item">
               <div className="dist-meta">
                 <span className="dist-name">Type 2 Diabetes Mellitus</span>
-                <span className="dist-pct mod">28.5% (Moderate)</span>
+                <span className={`dist-pct ${getBadgeClass(diabetesLevel).replace('badge-', '')}`}>{diabetesScore}% ({diabetesLevel})</span>
               </div>
               <div className="progress-track">
-                <div className="progress-fill mod" style={{ width: '28.5%' }}></div>
+                <div className={`progress-fill ${getBadgeClass(diabetesLevel).replace('badge-', '')}`} style={{ width: `${Math.min(100, diabetesScore)}%` }}></div>
               </div>
             </div>
 
             <div className="dist-item">
               <div className="dist-meta">
                 <span className="dist-name">Hypertension & Arterial Stiffness</span>
-                <span className="dist-pct low">18.2% (Low)</span>
+                <span className={`dist-pct ${getBadgeClass(hyperLevel).replace('badge-', '')}`}>{hyperScore}% ({hyperLevel})</span>
               </div>
               <div className="progress-track">
-                <div className="progress-fill low" style={{ width: '18.2%' }}></div>
+                <div className={`progress-fill ${getBadgeClass(hyperLevel).replace('badge-', '')}`} style={{ width: `${Math.min(100, hyperScore)}%` }}></div>
               </div>
             </div>
 
@@ -228,7 +247,7 @@ export default function DashboardView({
           <div className="clinical-advisory-note">
             <div className="note-title">⚡ Machine Learning Insight</div>
             <p>
-              Primary elevation factor is postprandial glucose fluctuation. 
+              Primary elevation factor is postprandial glucose fluctuation.
               Maintaining cardiovascular fitness keeps 10-year stroke and myocardial infarction risk below 15%.
             </p>
           </div>
